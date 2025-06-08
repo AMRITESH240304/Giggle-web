@@ -39,14 +39,14 @@ export default function Dashboard() {
           firstName: currentUser.name.split(" ")[0] || "",
           lastName: currentUser.name.split(" ")[1] || "",
         })
+        setLoading(false)
       } else {
+        // If no user is logged in, redirect to login page
         router.push("/")
       }
     } catch (error) {
       console.error("Auth check failed:", error)
       router.push("/")
-    } finally {
-      setLoading(false)
     }
   }
 
@@ -62,7 +62,10 @@ export default function Dashboard() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#F1FAEE]">
-        <div className="text-[#201F1F]">Loading...</div>
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-[#E63946] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-[#201F1F] text-lg">Loading your dashboard...</p>
+        </div>
       </div>
     )
   }

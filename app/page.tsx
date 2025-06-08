@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -16,10 +16,30 @@ import { useRouter } from "next/navigation"
 export default function AuthPage() {
   const [userType, setUserType] = useState("gig-seeker")
   const [isLoading, setIsLoading] = useState(false)
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true)
 
   const router = useRouter()
   const [error, setError] = useState("")
   const [success, setSuccess] = useState("")
+
+  // Check if user is already authenticated on page load
+  useEffect(() => {
+    const checkExistingAuth = async () => {
+      try {
+        const isAuth = await authService.isAuthenticated()
+        if (isAuth) {
+          router.push("/dashboard")
+          return
+        }
+      } catch (error) {
+        console.error("Auth check failed:", error)
+      } finally {
+        setIsCheckingAuth(false)
+      }
+    }
+
+    checkExistingAuth()
+  }, [router])
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -33,8 +53,11 @@ export default function AuthPage() {
     try {
       await authService.login(email, password)
       setSuccess("Login successful! Redirecting...")
-      // Redirect to dashboard or home page
-      setTimeout(() => router.push("/dashboard"), 1500)
+
+      // Small delay to show success message, then redirect
+      setTimeout(() => {
+        router.push("/dashboard")
+      }, 1000)
     } catch (error: any) {
       setError(error.message || "Login failed. Please try again.")
     } finally {
@@ -62,12 +85,32 @@ export default function AuthPage() {
       await authService.login(email, password)
 
       setSuccess("Account created successfully! Redirecting...")
-      setTimeout(() => router.push("/dashboard"), 1500)
+
+      // Small delay to show success message, then redirect based on user type
+      setTimeout(() => {
+        if (userType === "gig-seeker") {
+          router.push("/onboarding")
+        } else {
+          router.push("/dashboard")
+        }
+      }, 1000)
     } catch (error: any) {
       setError(error.message || "Signup failed. Please try again.")
     } finally {
       setIsLoading(false)
     }
+  }
+
+  // Show loading while checking authentication
+  if (isCheckingAuth) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#F1FAEE]">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-[#E63946] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-[#201F1F] text-lg">Checking authentication...</p>
+        </div>
+      </div>
+    )
   }
 
   return (

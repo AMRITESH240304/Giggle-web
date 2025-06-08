@@ -31,6 +31,9 @@ export const authService = {
     try {
       // await account.deleteSession('current');
       const session = await account.createEmailPasswordSession(email, password)
+      if (typeof window !== "undefined") {
+        document.cookie = `appwrite-session=true; path=/; max-age=${60 * 60 * 24 * 7}; SameSite=Lax`
+      }
       return session
     } catch (error) {
       console.error("Error logging in:", error)
@@ -42,6 +45,9 @@ export const authService = {
   async logout() {
     try {
       await account.deleteSession("current")
+      if (typeof window !== "undefined") {
+        document.cookie = "appwrite-session=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT"
+      }
     } catch (error) {
       console.error("Error logging out:", error)
       throw error
@@ -56,6 +62,15 @@ export const authService = {
     } catch (error) {
       console.error("Error getting current user:", error)
       return null
+    }
+  },
+
+  async isAuthenticated() {
+    try {
+      const user = await account.get()
+      return !!user
+    } catch (error) {
+      return false
     }
   },
 
