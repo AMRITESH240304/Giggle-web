@@ -104,10 +104,23 @@ export default function AuthPage() {
   // Show loading while checking authentication
   if (isCheckingAuth) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#F1FAEE]">
+      <div className="min-h-screen flex items-center justify-center bg-[#201F1F]">
         <div className="text-center">
-          <div className="w-16 h-16 border-4 border-[#E63946] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-[#201F1F] text-lg">Checking authentication...</p>
+          <Image src="/logo.png" alt="Gigapp Logo" width={300} height={200} className="mx-auto mb-8" />
+          {/* <div className="w-16 h-16 border-4 border-[#E63946] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div> */}
+          <p className="text-[#ffffff] text-lg">Checking authentication</p>
+          {/* <svg viewBox="0 0 200 50" class="w-52 h-12 relative font-lobster" >
+            <defs>
+              <mask id="fill-mask">
+                <rect width="100%" height="100%" fill="black"/>
+                <rect class="animate-fill-wave" x="-100" y="0" width="100" height="100" fill="white"/>
+              </mask>
+            </defs>
+    
+            <text x="0" y="40" font-size="40" fill="#444">Giggle</text>
+            
+            <text x="0" y="40" font-size="40" fill="white" mask="url(#fill-mask)">Giggle</text>
+          </svg> */}
         </div>
       </div>
     )

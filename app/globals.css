@@ -10,6 +10,20 @@ body {
   .text-balance {
     text-wrap: balance;
   }
+
+  @keyframes fill-wave {
+      0% {
+        transform: translateX(-100%);
+      }
+      100% {
+        transform: translateX(200%);
+      }
+    }
+
+    .animate-fill-wave {
+      animation: fill-wave 1.2s linear infinite;
+    }
+
 }
 
 @layer base {
