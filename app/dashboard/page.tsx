@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation"
 import { authService } from "@/lib/appwrite"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import Image from "next/image"
 
 interface User {
   $id: string
@@ -61,10 +62,10 @@ export default function Dashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#F1FAEE]">
+      <div className="min-h-screen flex items-center justify-center bg-[#201F1F]">
         <div className="text-center">
-          <div className="w-16 h-16 border-4 border-[#E63946] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-[#201F1F] text-lg">Loading your dashboard...</p>
+          <Image src="/logo.png" alt="Gigapp Logo" width={300} height={200} className="mx-auto mb-8" />
+          <p className="text-white text-lg">Loading your dashboard</p>
         </div>
       </div>
     )
