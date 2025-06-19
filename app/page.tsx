@@ -13,6 +13,8 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { authService } from "@/lib/appwrite"
 import { useRouter } from "next/navigation"
 
+import LoadingScreen from "@/components/ui/LoadingScreen"
+
 export default function AuthPage() {
   const [userType, setUserType] = useState("gig-seeker")
   const [isLoading, setIsLoading] = useState(false)
@@ -104,12 +106,7 @@ export default function AuthPage() {
   // Show loading while checking authentication
   if (isCheckingAuth) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#F1FAEE]">
-        <div className="text-center">
-          <div className="w-16 h-16 border-4 border-[#E63946] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-[#201F1F] text-lg">Checking authentication...</p>
-        </div>
-      </div>
+      <LoadingScreen message="Checking Authentication" />
     )
   }
 
