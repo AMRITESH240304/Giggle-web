@@ -40,13 +40,13 @@ export default function LandingPage() {
         <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
           <Button
             onClick={() => router.push("/sign-in")}
-            className="bg-white text-[#201F1F] px-8 py-3 text-lg font-semibold"
+            className="bg-white text-[#201F1F] px-8 py-3 text-lg font-semibold hover:text-white "
           >
             Sign In
           </Button>
           <Button
             onClick={() => router.push("/sign-up")}
-            className="bg-white text-[#201F1F] px-8 py-3 text-lg font-semibold"
+            className="bg-white text-[#201F1F] px-8 py-3 text-lg font-semibold hover:text-white"
           >
             Sign Up
           </Button>
