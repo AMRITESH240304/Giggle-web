@@ -52,7 +52,7 @@ const SignUpPage = () => {
         title: "Success",
         description: "Account created successfully!",
       });
-      router.push("/verify-email");
+      router.push(`/verify-email/${email}`);
     } catch (error: any) {
       console.error("Sign up error:", error);
       toast({

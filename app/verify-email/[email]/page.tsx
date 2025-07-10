@@ -1,13 +1,14 @@
 "use client";
 
 import { useEffect, useState, Suspense } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useSearchParams, useRouter, useParams } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "@/hooks/use-toast";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 
-const VerifyEmailContent = () => {
+const VerifyEmailContent = ({email}:{email:string}) => {
+  // console.log("------>",email)
   const [isVerifying, setIsVerifying] = useState(false);
   const [isVerified, setIsVerified] = useState(false);
   const [hasParams, setHasParams] = useState(false);
@@ -112,7 +113,10 @@ const VerifyEmailContent = () => {
         )
       ) : (
         <div className="text-[#F1FAEE]">
-          <p className="text-lg mb-4">Check your email</p>
+          <p className="text-base">Check your email</p>
+          <p className="bg-[#262628a4] mt-2 mb-3 py-2 font-bold text-lg shadow-md">
+            {email}
+          </p>
           <p className="text-sm text-gray-400 mb-6">
             We've sent you a verification link. Please check your email and
             click the link to verify your account.
@@ -139,6 +143,11 @@ const VerifyEmailContent = () => {
 }
 
 const VerifyEmailPage = () => {
+  // useEffect(()=>{
+    let {email} = useParams()
+    email = decodeURIComponent(email as string)
+  // })
+  
   return (
     <div className="min-h-screen w-full">
       <div className="flex items-center justify-center gap-24 h-screen">
@@ -159,7 +168,7 @@ const VerifyEmailPage = () => {
           </div>
 
           <Suspense fallback={<div className="text-[#F1FAEE]">Loading...</div>}>
-            <VerifyEmailContent />
+            <VerifyEmailContent email={email}/>
           </Suspense>
         </div>
       </div>
