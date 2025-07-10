@@ -1,4 +1,4 @@
-import { Client, Account, Databases, ID, AppwriteException } from "appwrite";
+import { Client, Account, Databases, ID, AppwriteException, OAuthProvider } from "appwrite";
 import Cookies from "js-cookie";
 
 export const appwriteConfig = {
@@ -153,6 +153,46 @@ export const saveUserProfile = async (
     return document;
   } catch (error) {
     console.error("Error saving user profile:", error);
+    const appwriteError = error as AppwriteException;
+    throw new Error(appwriteError.message);
+  }
+};
+
+export const loginWithGoogle = async () => {
+  try {
+    // update these
+    const redirectUrls = {
+      success: `${window.location.origin}/dashboard`,
+      failure: ``
+    };
+
+    account.createOAuth2Session(
+      OAuthProvider.Google,
+      redirectUrls.success,
+      redirectUrls.failure
+    );
+  } catch (error) {
+    console.error("Error with Google OAuth:", error);
+    const appwriteError = error as AppwriteException;
+    throw new Error(appwriteError.message);
+  }
+};
+
+export const loginWithApple = async () => {
+  try {
+    // update these
+    const redirectUrls = {
+      success: `${window.location.origin}/dashboard`,
+      failure: ``
+    };
+
+    account.createOAuth2Session(
+      OAuthProvider.Apple,
+      redirectUrls.success,
+      redirectUrls.failure
+    );
+  } catch (error) {
+    console.error("Error with Apple OAuth:", error);
     const appwriteError = error as AppwriteException;
     throw new Error(appwriteError.message);
   }
