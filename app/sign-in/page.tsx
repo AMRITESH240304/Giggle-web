@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
+import OverlayWrapper from "@/components/OverlayWrapper.tsx";
 
 const SignInPage = () => {
   const [email, setEmail] = useState("");
@@ -59,19 +60,9 @@ const SignInPage = () => {
   };
 
   return (
-    <div className="min-h-screen w-full">
-      <div className="flex items-center justify-center gap-24 h-screen">
-        {/* Left Side Logo */}
-        <Image
-          src="/logo.svg"
-          alt="Giggle Logo"
-          width={0}
-          height={0}
-          className="w-[396px] h-auto"
-        />
-
+    <OverlayWrapper>
         {/* Right Side Login Form */}
-        <div className="w-[463px] h-[573px] bg-[#201F1F] rounded-3xl flex flex-col gap-8 justify-center items-center p-10">
+        <div className="w-full max-w-md bg-[#201F1F] rounded-3xl flex flex-col gap-8 justify-center items-center p-8 sm:p-10">
           <div className="flex items-center justify-center space-x-2">
             <h1 className="text-3xl font-bold text-[#E63946]">Welcome</h1>
             <h1 className="text-3xl font-bold text-[#F1FAEE]">Back!</h1>
@@ -115,7 +106,7 @@ const SignInPage = () => {
           </div>
 
           <div className="w-full flex justify-center items-center gap-6">
-            <button className="aspect-square w-[75px] bg-[#4F4F4F]/50 border border-[#4F4F4F] rounded-[20px] flex items-center justify-center  hover:bg-[#4F4F4F]/70 ">
+            <button className="aspect-square w-[60px] sm:w-[75px] bg-[#4F4F4F]/50 border border-[#4F4F4F] rounded-[20px] flex items-center justify-center hover:bg-[#4F4F4F]/70">
               <Image
                 src="/google.svg"
                 alt="Google"
@@ -125,7 +116,7 @@ const SignInPage = () => {
               />
             </button>
 
-            <button className="aspect-square w-[75px] bg-[#4F4F4F]/50 border border-[#4F4F4F] rounded-[20px] flex items-center justify-center  hover:bg-[#4F4F4F]/70">
+            <button className="aspect-square w-[60px] sm:w-[75px] bg-[#4F4F4F]/50 border border-[#4F4F4F] rounded-[20px] flex items-center justify-center hover:bg-[#4F4F4F]/70">
               <Image
                 src="/apple.svg"
                 alt="Apple"
@@ -148,9 +139,9 @@ const SignInPage = () => {
 
           <div className="w-[134px] h-[5px] bg-white rounded-full"></div>
         </div>
-      </div>
-    </div>
+      </OverlayWrapper>
   );
+
 };
 
 export default SignInPage;
