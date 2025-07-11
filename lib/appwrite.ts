@@ -163,13 +163,11 @@ export const loginWithGoogle = async () => {
     // update these
     const redirectUrls = {
       success: `${window.location.origin}/dashboard`,
-      failure: ``
     };
 
     account.createOAuth2Session(
       OAuthProvider.Google,
       redirectUrls.success,
-      redirectUrls.failure
     );
   } catch (error) {
     console.error("Error with Google OAuth:", error);
@@ -183,13 +181,11 @@ export const loginWithApple = async () => {
     // update these
     const redirectUrls = {
       success: `${window.location.origin}/dashboard`,
-      failure: ``
     };
 
     account.createOAuth2Session(
       OAuthProvider.Apple,
       redirectUrls.success,
-      redirectUrls.failure
     );
   } catch (error) {
     console.error("Error with Apple OAuth:", error);

@@ -8,6 +8,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
 import { toast } from "@/hooks/use-toast";
 import OverlayWrapper from "@/components/OverlayWrapper.tsx";
+import { loginWithApple, loginWithGoogle } from "@/lib/appwrite";
 
 const SignUpPage = () => {
   const [email, setEmail] = useState("");
@@ -65,6 +66,48 @@ const SignUpPage = () => {
     }
   };
 
+  const handleGoogleAuth = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setIsLoading(true)
+    try {
+      await loginWithGoogle();
+      toast({
+        title: "Success",
+        description: "Logged in successfully!",
+      });
+    } catch (error: any) {
+      console.error("Login error:", error);
+      toast({
+        title: "Login Failed",
+        description: error?.message || "Invalid email or password",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const handleAppleAuth = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setIsLoading(true)
+    try {
+      await loginWithApple();
+      toast({
+        title: "Success",
+        description: "Logged in successfully!",
+      });
+    } catch (error: any) {
+      console.error("Login error:", error);
+      toast({
+        title: "Login Failed",
+        description: error?.message || "Invalid email or password",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   return (
     <OverlayWrapper>
       {/* Right Side Sign Up Form */}
@@ -120,7 +163,10 @@ const SignUpPage = () => {
         </div>
 
         <div className="w-full flex justify-center items-center gap-6">
-          <button className="aspect-square w-[60px] sm:w-[75px] bg-[#4F4F4F]/50 border border-[#4F4F4F] rounded-[20px] flex items-center justify-center hover:bg-[#4F4F4F]/70">
+          <button
+            className="aspect-square w-[60px] sm:w-[75px] bg-[#4F4F4F]/50 border border-[#4F4F4F] rounded-[20px] flex items-center justify-center hover:bg-[#4F4F4F]/70"
+            onClick={handleGoogleAuth}
+          >
             <Image
               src="/google.svg"
               alt="Google"
@@ -130,7 +176,10 @@ const SignUpPage = () => {
             />
           </button>
 
-          <button className="aspect-square w-[60px] sm:w-[75px] bg-[#4F4F4F]/50 border border-[#4F4F4F] rounded-[20px] flex items-center justify-center hover:bg-[#4F4F4F]/70">
+          <button
+            className="aspect-square w-[60px] sm:w-[75px] bg-[#4F4F4F]/50 border border-[#4F4F4F] rounded-[20px] flex items-center justify-center hover:bg-[#4F4F4F]/70"
+            onClick={handleAppleAuth}
+          >
             <Image
               src="/apple.svg"
               alt="Apple"
