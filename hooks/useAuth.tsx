@@ -12,6 +12,8 @@ import {
   removeTokenFromCookie,
   updateEmailVerification,
   createEmailVerification,
+  loginWithGoogle,
+  loginWithApple,
 } from "@/lib/appwrite";
 import type { Models } from "appwrite";
 
@@ -25,6 +27,8 @@ interface AuthContextType {
   refreshToken: () => Promise<void>;
   sendVerificationEmail: (url: string) => Promise<void>;
   verifyEmail: (userId: string, secret: string) => Promise<void>;
+  loginWithGoogle: () => Promise<void>;
+  loginWithApple: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -93,6 +97,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const handleLoginWithGoogle = async () => {
+    try {
+      await loginWithGoogle();
+    } catch (error) {
+      console.error("Error with Google login:", error);
+      throw error;
+    }
+  };
+
+  const handleLoginWithApple = async () => {
+    try {
+      await loginWithApple();
+    } catch (error) {
+      console.error("Error with Apple login:", error);
+      throw error;
+    }
+  };
+
   const handleLogout = async () => {
     try {
       const res = await logout();
@@ -147,6 +169,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         refreshToken,
         sendVerificationEmail: handleSendVerificationEmail,
         verifyEmail: handleVerifyEmail,
+        loginWithGoogle: handleLoginWithGoogle,
+        loginWithApple: handleLoginWithApple,
       }}
     >
       {children}
