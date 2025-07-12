@@ -9,7 +9,6 @@ const DashboardPage = () => {
   const router = useRouter();
   const pathname = usePathname()
   const { user, logout } = useAuth();
-  console.log("user currently on a refresh",user)
 
   const handleLogout = async () => {
     try {
