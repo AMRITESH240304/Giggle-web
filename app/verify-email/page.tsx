@@ -7,6 +7,7 @@ import { toast } from "@/hooks/use-toast";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Router } from "lucide-react";
+import { logout } from "@/lib/appwrite";
 
 const VerifyEmailContent = ({email}:{email:string}) => {
   const [isVerifying, setIsVerifying] = useState(false);
@@ -17,6 +18,7 @@ const VerifyEmailContent = ({email}:{email:string}) => {
   const auth = useAuth();
   const verifyEmail = auth?.verifyEmail;
   const sendVerificationEmail = auth?.sendVerificationEmail;
+  const {user} = useAuth()
 
   const userId = searchParams.get("userId");
   const secret = searchParams.get("secret");
@@ -55,6 +57,16 @@ const VerifyEmailContent = ({email}:{email:string}) => {
     }
   };
 
+  const handleLogout = async () => {
+    try {
+      await logout();
+      // router.push("/sign-up");
+      window.location.href = "/sign-up"
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
+
   const handleResendVerification = async () => {
     try {
       const verificationUrl = `${window.location.origin}/verify-email`;
@@ -74,10 +86,6 @@ const VerifyEmailContent = ({email}:{email:string}) => {
 
   const handleContinue = () => {
     router.push("/dashboard");
-  };
-
-  const handleSignIn = () => {
-    router.push("/sign-in");
   };
 
   return (
@@ -129,18 +137,11 @@ const VerifyEmailContent = ({email}:{email:string}) => {
               Resend Verification Email
             </Button>
             <Button
-              onClick={handleSignIn}
+              onClick={handleLogout}
               variant="outline"
               className="border-[#E63946] text-[#E63946] hover:bg-[#E63946] hover:text-white font-bold rounded-md py-3 px-8"
             >
-              Back to Sign In
-            </Button>
-            <Button
-              onClick={handleSignIn}
-              variant="outline"
-              className="border-[#E63946] text-[#E63946] hover:bg-[#E63946] hover:text-white font-bold rounded-md py-3 px-8"
-            >
-              Back to Sign In
+              Change Account (Logout)
             </Button>
           </div>
         </div>
@@ -155,9 +156,11 @@ const VerifyEmailPage = () => {
   
 
   useEffect(()=>{
-    if (!user){
-      router.push("/sign-up")
-    }
+    setTimeout(()=>{
+      if (!user){
+        router.push("/sign-up")
+      }
+    },700)
   },[])
 
   if(user){
