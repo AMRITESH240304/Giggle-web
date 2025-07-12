@@ -1,13 +1,15 @@
 "use client";
 
 import { useEffect, useState, Suspense } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useSearchParams, useRouter, useParams } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "@/hooks/use-toast";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
+import { Router } from "lucide-react";
+import { logout } from "@/lib/appwrite";
 
-const VerifyEmailContent = () => {
+const VerifyEmailContent = ({email}:{email:string}) => {
   const [isVerifying, setIsVerifying] = useState(false);
   const [isVerified, setIsVerified] = useState(false);
   const [hasParams, setHasParams] = useState(false);
@@ -16,6 +18,7 @@ const VerifyEmailContent = () => {
   const auth = useAuth();
   const verifyEmail = auth?.verifyEmail;
   const sendVerificationEmail = auth?.sendVerificationEmail;
+  const {user} = useAuth()
 
   const userId = searchParams.get("userId");
   const secret = searchParams.get("secret");
@@ -54,6 +57,16 @@ const VerifyEmailContent = () => {
     }
   };
 
+  const handleLogout = async () => {
+    try {
+      await logout();
+      // router.push("/sign-up");
+      window.location.href = "/sign-up"
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
+
   const handleResendVerification = async () => {
     try {
       const verificationUrl = `${window.location.origin}/verify-email`;
@@ -73,10 +86,6 @@ const VerifyEmailContent = () => {
 
   const handleContinue = () => {
     router.push("/dashboard");
-  };
-
-  const handleSignIn = () => {
-    router.push("/sign-in");
   };
 
   return (
@@ -113,6 +122,9 @@ const VerifyEmailContent = () => {
       ) : (
         <div className="text-[#F1FAEE]">
           <p className="text-lg mb-4">Check your email</p>
+          <p className="bg-[#262628a4] mt-2 mb-3 py-2 font-bold text-lg shadow-md">
+            {email}
+          </p>
           <p className="text-sm text-gray-400 mb-6">
             We've sent you a verification link. Please check your email and
             click the link to verify your account.
@@ -125,11 +137,11 @@ const VerifyEmailContent = () => {
               Resend Verification Email
             </Button>
             <Button
-              onClick={handleSignIn}
+              onClick={handleLogout}
               variant="outline"
               className="border-[#E63946] text-[#E63946] hover:bg-[#E63946] hover:text-white font-bold rounded-md py-3 px-8"
             >
-              Back to Sign In
+              Change Account (Logout)
             </Button>
           </div>
         </div>
@@ -139,7 +151,20 @@ const VerifyEmailContent = () => {
 }
 
 const VerifyEmailPage = () => {
-  return (
+  const {user} = useAuth()
+  const router = useRouter()
+  
+
+  useEffect(()=>{
+    setTimeout(()=>{
+      if (!user){
+        router.push("/sign-up")
+      }
+    },700)
+  },[])
+
+  if(user){
+    return (
     <div className="min-h-screen w-full">
       <div className="flex items-center justify-center gap-24 h-screen">
         {/* Left Side Logo */}
@@ -159,12 +184,13 @@ const VerifyEmailPage = () => {
           </div>
 
           <Suspense fallback={<div className="text-[#F1FAEE]">Loading...</div>}>
-            <VerifyEmailContent />
+            <VerifyEmailContent email={user?.email}/>
           </Suspense>
         </div>
       </div>
     </div>
-  );
+  )
+};
 };
 
 export default VerifyEmailPage;
