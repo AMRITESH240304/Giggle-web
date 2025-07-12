@@ -64,8 +64,8 @@ const SignInPage = () => {
         {/* Right Side Login Form */}
         <div className="w-full max-w-md bg-[#201F1F] rounded-3xl flex flex-col gap-8 justify-center items-center p-8 sm:p-10">
           <div className="flex items-center justify-center space-x-2">
-            <h1 className="text-3xl font-bold text-[#E63946]">Welcome</h1>
-            <h1 className="text-3xl font-bold text-[#F1FAEE]">Back!</h1>
+            <h1 className="text-3xl font-bold text-[#E63946] font-sf-pro">Welcome</h1>
+            <h1 className="text-3xl font-bold text-[#F1FAEE] font-sf-pro">Back!</h1>
           </div>
 
           <div className="flex flex-col justify-center items-center gap-2 w-full">
@@ -73,26 +73,36 @@ const SignInPage = () => {
               className="flex flex-col gap-4 w-full"
               onSubmit={handleSubmit}
             >
-              <Input
-                id="email"
-                type="email"
-                placeholder="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="bg-white text-[#201F1F] py-6 px-8 rounded-2xl w-[80%] mx-auto"
-              />
-              <Input
-                id="password"
-                type="password"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="bg-white text-[#201F1F] py-6 px-8 rounded-2xl w-[80%] mx-auto"
-              />
+              <div className="w-[80%] mx-auto">
+                <label htmlFor="email" className="block text-[#F1FAEE] text-sm font-medium mb-2 font-sf-pro">
+                  Email Address
+                </label>
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="Enter your email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="bg-white text-[#201F1F] py-6 px-8 rounded-2xl w-full"
+                />
+              </div>
+              <div className="w-[80%] mx-auto">
+                <label htmlFor="password" className="block text-[#F1FAEE] text-sm font-medium mb-2 font-sf-pro">
+                  Password
+                </label>
+                <Input
+                  id="password"
+                  type="password"
+                  placeholder="Enter your password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="bg-white text-[#201F1F] py-6 px-8 rounded-2xl w-full"
+                />
+              </div>
               <Button
                 type="submit"
                 disabled={isLoading}
-                className="bg-[#E63946] hover:bg-[#d32f2f] text-white font-bold rounded-md py-6 w-[65%] mt-2 mx-auto"
+                className="bg-[#E63946] hover:bg-[#d32f2f] text-white font-bold rounded-md py-6 w-[65%] mt-2 mx-auto font-sf-pro"
               >
                 {isLoading ? "Signing In..." : "Sign In"}
               </Button>
@@ -101,7 +111,7 @@ const SignInPage = () => {
 
           <div className="flex items-center w-3/4">
             <div className="flex-1 h-[1px] bg-[#F1FAEE]"></div>
-            <span className="px-4 text-[#F1FAEE] text-sm">OR</span>
+            <span className="px-4 text-[#F1FAEE] text-sm font-sf-pro">OR</span>
             <div className="flex-1 h-[1px] bg-[#F1FAEE]"></div>
           </div>
 
@@ -128,10 +138,10 @@ const SignInPage = () => {
           </div>
 
           <div className="flex items-center justify-center space-x-2">
-            <span className="text-[#F1FAEE] text-sm">Not a member?</span>
+            <span className="text-[#F1FAEE] text-sm font-sf-pro">Not a member?</span>
             <button
               onClick={() => router.push("/sign-up")}
-              className="text-[#E63946] text-sm font-medium hover:underline"
+              className="text-[#E63946] text-sm font-medium hover:underline font-sf-pro"
             >
               Register Now
             </button>

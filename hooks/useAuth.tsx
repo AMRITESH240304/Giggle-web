@@ -35,10 +35,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   );
   const [token, setToken] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
-    checkAuth();
+    setIsClient(true);
   }, []);
+
+  useEffect(() => {
+    if (isClient) {
+      checkAuth();
+    }
+  }, [isClient]);
 
   const checkAuth = async () => {
     try {
@@ -139,7 +146,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     <AuthContext.Provider
       value={{
         user,
-        loading,
+        loading: loading || !isClient,
         token,
         login: handleLogin,
         logout: handleLogout,

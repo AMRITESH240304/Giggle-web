@@ -21,16 +21,16 @@ const DashboardPage = () => {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen">
       <div className="flex flex-col items-center justify-center space-y-6">
-        <h1 className="text-4xl text-white font-bold">Dashboard</h1>
+        <h1 className="text-4xl text-white font-bold font-sf-pro">Dashboard</h1>
         {user && (
-          <p className="text-white text-lg">
+          <p className="text-white text-lg font-sf-pro">
             Welcome, {user.name || user.email}!
           </p>
         )}
         <Button
           onClick={handleLogout}
           variant="outline"
-          className="bg-white/10 border-white/20 text-white hover:bg-white/20 hover:border-white/30"
+          className="bg-white/10 border-white/20 text-white hover:bg-white/20 hover:border-white/30 font-sf-pro"
         >
           Logout
         </Button>

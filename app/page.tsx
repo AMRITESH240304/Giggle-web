@@ -33,20 +33,20 @@ export default function LandingPage() {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen">
       <div className="flex flex-col items-center justify-center text-center space-y-8 p-8">
-        <h1 className="text-6xl font-bold text-white mb-4">
+        <h1 className="text-6xl font-bold text-white mb-4 font-sf-pro">
           Welcome to Giggle
         </h1>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
           <Button
             onClick={() => router.push("/sign-in")}
-            className="bg-white text-[#201F1F] px-8 py-3 text-lg font-semibold hover:text-white "
+            className="bg-white text-[#201F1F] px-8 py-3 text-lg font-semibold hover:text-white font-sf-pro"
           >
             Sign In
           </Button>
           <Button
             onClick={() => router.push("/sign-up")}
-            className="bg-white text-[#201F1F] px-8 py-3 text-lg font-semibold hover:text-white"
+            className="bg-white text-[#201F1F] px-8 py-3 text-lg font-semibold hover:text-white font-sf-pro"
           >
             Sign Up
           </Button>
