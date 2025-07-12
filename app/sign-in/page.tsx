@@ -19,11 +19,7 @@ const SignInPage = () => {
   const { user, loading, login } = auth;
   const router = useRouter();
 
-  useEffect(() => {
-    if (!loading && user) {
-      router.push("/dashboard");
-    }
-  }, [loading, user, router]);
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

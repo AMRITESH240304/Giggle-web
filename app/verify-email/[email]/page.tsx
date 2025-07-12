@@ -57,7 +57,7 @@ const VerifyEmailContent = ({email}:{email:string}) => {
 
   const handleResendVerification = async () => {
     try {
-      const verificationUrl = `${window.location.origin}/verify-email`;
+      const verificationUrl = `${window.location.origin}/verify-email/${email}`;
       await sendVerificationEmail(verificationUrl);
       toast({
         title: "Success",
@@ -127,6 +127,13 @@ const VerifyEmailContent = ({email}:{email:string}) => {
               className="bg-[#E63946] hover:bg-[#d32f2f] text-white font-bold rounded-md py-3 px-8"
             >
               Resend Verification Email
+            </Button>
+            <Button
+              onClick={handleSignIn}
+              variant="outline"
+              className="border-[#E63946] text-[#E63946] hover:bg-[#E63946] hover:text-white font-bold rounded-md py-3 px-8"
+            >
+              Back to Sign In
             </Button>
             <Button
               onClick={handleSignIn}

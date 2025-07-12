@@ -43,7 +43,7 @@ const SignUpPage = () => {
     try {
       await register(email, password, name);
 
-      const verificationUrl = `${window.location.origin}/verify-email`;
+      const verificationUrl = `${window.location.origin}/verify-email/${email}`;
 
       await sendVerificationEmail(verificationUrl);
 
