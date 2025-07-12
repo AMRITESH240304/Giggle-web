@@ -6,9 +6,9 @@ import { useAuth } from "@/hooks/useAuth";
 import { toast } from "@/hooks/use-toast";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
+import { Router } from "lucide-react";
 
 const VerifyEmailContent = ({email}:{email:string}) => {
-  // console.log("------>",email)
   const [isVerifying, setIsVerifying] = useState(false);
   const [isVerified, setIsVerified] = useState(false);
   const [hasParams, setHasParams] = useState(false);
@@ -57,7 +57,7 @@ const VerifyEmailContent = ({email}:{email:string}) => {
 
   const handleResendVerification = async () => {
     try {
-      const verificationUrl = `${window.location.origin}/verify-email/${email}`;
+      const verificationUrl = `${window.location.origin}/verify-email`;
       await sendVerificationEmail(verificationUrl);
       toast({
         title: "Success",
@@ -113,7 +113,7 @@ const VerifyEmailContent = ({email}:{email:string}) => {
         )
       ) : (
         <div className="text-[#F1FAEE]">
-          <p className="text-base">Check your email</p>
+          <p className="text-lg mb-4">Check your email</p>
           <p className="bg-[#262628a4] mt-2 mb-3 py-2 font-bold text-lg shadow-md">
             {email}
           </p>
@@ -150,12 +150,18 @@ const VerifyEmailContent = ({email}:{email:string}) => {
 }
 
 const VerifyEmailPage = () => {
-  // useEffect(()=>{
-    let {email} = useParams()
-    email = decodeURIComponent(email as string)
-  // })
+  const {user} = useAuth()
+  const router = useRouter()
   
-  return (
+
+  useEffect(()=>{
+    if (!user){
+      router.push("/sign-up")
+    }
+  },[])
+
+  if(user){
+    return (
     <div className="min-h-screen w-full">
       <div className="flex items-center justify-center gap-24 h-screen">
         {/* Left Side Logo */}
@@ -175,12 +181,13 @@ const VerifyEmailPage = () => {
           </div>
 
           <Suspense fallback={<div className="text-[#F1FAEE]">Loading...</div>}>
-            <VerifyEmailContent email={email}/>
+            <VerifyEmailContent email={user?.email}/>
           </Suspense>
         </div>
       </div>
     </div>
-  );
+  )
+};
 };
 
 export default VerifyEmailPage;
