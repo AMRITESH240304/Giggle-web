@@ -1,12 +1,13 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
-import { useRouter } from "next/navigation";
+import { useRouter,usePathname } from "next/navigation";
 
 const DashboardPage = () => {
   const router = useRouter();
+  const pathname = usePathname()
   const { user, logout } = useAuth();
 
   const handleLogout = async () => {
@@ -18,6 +19,14 @@ const DashboardPage = () => {
     }
   };
 
+  useEffect(()=>{
+    if (!user?.emailVerification && pathname === "/dashboard"){
+      router.push(`/verify-email`)
+    }
+  })
+
+      
+  if(user?.emailVerification){
   return (
     <div className="flex flex-col items-center justify-center min-h-screen">
       <div className="flex flex-col items-center justify-center space-y-6">
@@ -37,6 +46,7 @@ const DashboardPage = () => {
       </div>
     </div>
   );
+}
 };
 
 export default DashboardPage;
