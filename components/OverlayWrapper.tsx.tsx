@@ -13,7 +13,7 @@ const OverlayWrapper = ({ children }: OverlayWrapperProps) => {
         <div className="flex justify-center w-full md:w-1/2">
           <div className="w-48 sm:w-56 md:w-64 lg:w-80 xl:w-[396px]">
             <Image
-              src="/logo.svg"
+              src="/logo.png"
               alt="Giggle Logo"
               width={0}
               height={0}
