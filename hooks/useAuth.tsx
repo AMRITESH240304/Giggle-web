@@ -39,8 +39,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   );
   const [token, setToken] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
+    setIsMounted(true);
     checkAuth();
   }, []);
 
@@ -161,7 +163,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     <AuthContext.Provider
       value={{
         user,
-        loading,
+        loading: loading || !isMounted,
         token,
         login: handleLogin,
         logout: handleLogout,
@@ -173,7 +175,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         loginWithApple: handleLoginWithApple,
       }}
     >
-      {children}
+      {isMounted ? children : null}
     </AuthContext.Provider>
   );
 }
