@@ -13,6 +13,7 @@ import { loginWithApple, loginWithGoogle } from "@/lib/appwrite";
 const SignUpPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [name, setName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -31,10 +32,28 @@ const SignUpPage = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!email || !password || !name) {
+    if (!email || !password || !confirmPassword || !name) {
       toast({
         title: "Error",
         description: "Please fill in all fields",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      toast({
+        title: "Error",
+        description: "Passwords do not match",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (password.length < 6) {
+      toast({
+        title: "Error",
+        description: "Password must be at least 6 characters long",
         variant: "destructive",
       });
       return;
@@ -113,8 +132,8 @@ const SignUpPage = () => {
       {/* Right Side Sign Up Form */}
       <div className="w-full max-w-md bg-[#201F1F] rounded-3xl flex flex-col gap-6 justify-center items-center p-8 sm:p-10">
         <div className="flex items-center justify-center space-x-2">
-          <h1 className="text-3xl font-bold text-[#E63946]">Create</h1>
-          <h1 className="text-3xl font-bold text-[#F1FAEE]">Account</h1>
+          <h1 className="text-3xl font-sf-pro-display font-bold text-[#E63946]">Create</h1>
+          <h1 className="text-3xl font-sf-pro-display font-bold text-[#F1FAEE]">Account</h1>
         </div>
 
         <div className="flex flex-col justify-center items-center gap-2 w-full">
@@ -122,34 +141,74 @@ const SignUpPage = () => {
             className="flex flex-col gap-4 w-full"
             onSubmit={handleSubmit}
           >
-            <Input
-              id="name"
-              type="text"
-              placeholder="Full Name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="bg-white text-[#201F1F] py-6 px-8 rounded-2xl w-[80%] mx-auto"
-            />
-            <Input
-              id="email"
-              type="email"
-              placeholder="Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="bg-white text-[#201F1F] py-6 px-8 rounded-2xl w-[80%] mx-auto"
-            />
-            <Input
-              id="password"
-              type="password"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="bg-white text-[#201F1F] py-6 px-8 rounded-2xl w-[80%] mx-auto"
-            />
+            <div className="w-[80%] mx-auto">
+              <label htmlFor="name" className="block text-[#F1FAEE] text-sm font-sf-pro-text font-medium mb-2 ml-2">
+                Full Name
+              </label>
+              <Input
+                id="name"
+                type="text"
+                placeholder="Enter your full name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="bg-white text-[#201F1F] py-6 px-8 rounded-2xl w-full font-sf-pro-text"
+                autoComplete="name"
+                required
+              />
+            </div>
+            
+            <div className="w-[80%] mx-auto">
+              <label htmlFor="email" className="block text-[#F1FAEE] text-sm font-sf-pro-text font-medium mb-2 ml-2">
+                Email Address
+              </label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="Enter your email address"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="bg-white text-[#201F1F] py-6 px-8 rounded-2xl w-full font-sf-pro-text"
+                autoComplete="email"
+                required
+              />
+            </div>
+            
+            <div className="w-[80%] mx-auto">
+              <label htmlFor="password" className="block text-[#F1FAEE] text-sm font-sf-pro-text font-medium mb-2 ml-2">
+                Password
+              </label>
+              <Input
+                id="password"
+                type="password"
+                placeholder="Create a password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="bg-white text-[#201F1F] py-6 px-8 rounded-2xl w-full font-sf-pro-text"
+                autoComplete="new-password"
+                required
+              />
+            </div>
+            
+            <div className="w-[80%] mx-auto">
+              <label htmlFor="confirmPassword" className="block text-[#F1FAEE] text-sm font-sf-pro-text font-medium mb-2 ml-2">
+                Confirm Password
+              </label>
+              <Input
+                id="confirmPassword"
+                type="password"
+                placeholder="Confirm your password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                className="bg-white text-[#201F1F] py-6 px-8 rounded-2xl w-full font-sf-pro-text"
+                autoComplete="new-password"
+                required
+              />
+            </div>
+            
             <Button
               type="submit"
               disabled={isLoading}
-              className="bg-[#E63946] hover:bg-[#d32f2f] text-white font-bold rounded-md py-6 w-[65%] mt-2 mx-auto"
+              className="bg-[#E63946] hover:bg-[#d32f2f] text-white font-sf-pro-text font-bold rounded-md py-6 w-[65%] mt-2 mx-auto"
             >
               {isLoading ? "Creating Account..." : "Sign Up"}
             </Button>
@@ -158,7 +217,7 @@ const SignUpPage = () => {
 
         <div className="flex items-center w-3/4">
           <div className="flex-1 h-[1px] bg-[#F1FAEE]"></div>
-          <span className="px-4 text-[#F1FAEE] text-sm">OR</span>
+          <span className="px-4 text-[#F1FAEE] text-sm font-sf-pro-text">OR</span>
           <div className="flex-1 h-[1px] bg-[#F1FAEE]"></div>
         </div>
 
@@ -191,12 +250,12 @@ const SignUpPage = () => {
         </div>
 
         <div className="flex items-center justify-center space-x-2">
-          <span className="text-[#F1FAEE] text-sm">
+          <span className="text-[#F1FAEE] text-sm font-sf-pro-text">
             Already have an account?
           </span>
           <button
             onClick={() => router.push("/sign-in")}
-            className="text-[#E63946] text-sm font-medium hover:underline"
+            className="text-[#E63946] text-sm font-sf-pro-text font-medium hover:underline"
           >
             Sign In
           </button>

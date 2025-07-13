@@ -169,7 +169,7 @@ const VerifyEmailPage = () => {
       <div className="flex items-center justify-center gap-24 h-screen">
         {/* Left Side Logo */}
         <Image
-          src="/logo.svg"
+          src="/logo.png"
           alt="Giggle Logo"
           width={0}
           height={0}
