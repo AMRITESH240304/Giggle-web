@@ -9,6 +9,7 @@ import LoadingScreen from "@/components/LoadingScreen";
 export default function LandingPage() {
   const auth = useAuth();
   const router = useRouter();
+  //done 
 
   if (!auth) {
     return <LoadingScreen message="Initializing..." />;
