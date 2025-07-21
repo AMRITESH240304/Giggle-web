@@ -8,11 +8,13 @@ import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 import OverlayWrapper from "@/components/OverlayWrapper.tsx";
+import { Eye, EyeOff } from "lucide-react";
 
 const SignInPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const { toast } = useToast();
 
@@ -49,9 +51,16 @@ const SignInPage = () => {
       router.push("/dashboard"); // Redirect to dashboard after login
     } catch (error: any) {
       console.error("Login error:", error);
+      
+      // Check if it's an authentication error specifically
+      const isAuthError = error?.message?.toLowerCase().includes('invalid') || 
+                         error?.message?.toLowerCase().includes('wrong') ||
+                         error?.message?.toLowerCase().includes('incorrect') ||
+                         error?.code === 401;
+      
       toast({
-        title: "Login Failed",
-        description: error?.message || "Invalid email or password",
+        title: "Invalid Credentials",
+        description: isAuthError ? "Invalid email or password. Please check your credentials and try again." : (error?.message || "Login failed. Please try again."),
         variant: "destructive",
       });
     } finally {
@@ -71,8 +80,8 @@ const SignInPage = () => {
     } catch (error: any) {
       console.error("Login error:", error);
       toast({
-        title: "Login Failed",
-        description: error?.message || "Invalid email or password",
+        title: "Authentication Failed",
+        description: error?.message || "Google authentication failed. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -92,8 +101,8 @@ const SignInPage = () => {
     } catch (error: any) {
       console.error("Login error:", error);
       toast({
-        title: "Login Failed",
-        description: error?.message || "Invalid email or password",
+        title: "Authentication Failed",
+        description: error?.message || "Apple authentication failed. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -105,88 +114,92 @@ const SignInPage = () => {
     <OverlayWrapper>
       {/* Right Side Login Form */}
       <div className="w-full max-w-md bg-[#201F1F] rounded-3xl flex flex-col gap-8 justify-center items-center p-8 sm:p-10">
-        <div className="flex items-center justify-center space-x-2">
-          <h1 className="text-3xl font-sf-pro-display font-bold text-[#E63946]">Welcome</h1>
-          <h1 className="text-3xl font-sf-pro-display font-bold text-[#F1FAEE]">Back!</h1>
+        <div className="flex items-center justify-center">
+          <h1 className="text-4xl font-sf-pro-display font-bold text-[#E63946]">Welcome</h1>
         </div>
 
-        <div className="flex flex-col justify-center items-center gap-2 w-full">
+        <div className="flex flex-col justify-center items-center gap-4 w-full">
           <form
             className="flex flex-col gap-4 w-full"
             onSubmit={handleSubmit}
           >
-            <div className="w-[80%] mx-auto">
-              <label htmlFor="email" className="block text-[#F1FAEE] text-sm font-sf-pro-text font-medium mb-2 ml-2">
-                Email Address
-              </label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="Enter your email address"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="bg-white text-[#201F1F] py-6 px-8 rounded-2xl w-full font-sf-pro-text"
-                autoComplete="email"
-                required
-              />
-            </div>
+            <Input
+              id="email"
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="bg-white text-[#201F1F] py-6 px-8 rounded-2xl w-full font-sf-pro-text placeholder:text-gray-500"
+              autoComplete="email"
+              required
+            />
             
-            <div className="w-[80%] mx-auto">
-              <label htmlFor="password" className="block text-[#F1FAEE] text-sm font-sf-pro-text font-medium mb-2 ml-2">
-                Password
-              </label>
+            <div className="relative">
               <Input
                 id="password"
-                type="password"
-                placeholder="Enter your password"
+                type={showPassword ? "text" : "password"}
+                placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="bg-white text-[#201F1F] py-6 px-8 rounded-2xl w-full font-sf-pro-text"
+                className="bg-white text-[#201F1F] py-6 px-8 pr-12 rounded-2xl w-full font-sf-pro-text placeholder:text-gray-500"
                 autoComplete="current-password"
                 required
               />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+              >
+                {showPassword ? (
+                  <EyeOff className="h-5 w-5" />
+                ) : (
+                  <Eye className="h-5 w-5" />
+                )}
+              </button>
             </div>
             
             <Button
               type="submit"
               disabled={isLoading}
-              className="bg-[#E63946] hover:bg-[#d32f2f] text-white font-sf-pro-text font-bold rounded-md py-6 w-[65%] mt-2 mx-auto"
+              className="bg-[#E63946] hover:bg-[#d32f2f] text-white font-sf-pro-text font-bold rounded-2xl py-6 w-full mt-4 text-lg"
             >
-              {isLoading ? "Signing In..." : "Sign In"}
+              {isLoading ? "SIGNING IN..." : "SIGN IN"}
             </Button>
           </form>
         </div>
 
-        <div className="flex items-center w-3/4">
+        <div className="flex items-center w-full px-4">
           <div className="flex-1 h-[1px] bg-[#F1FAEE]"></div>
-          <span className="px-4 text-[#F1FAEE] text-sm font-sf-pro-text">OR</span>
+          <span className="px-6 text-[#F1FAEE] text-sm font-sf-pro-text">OR</span>
           <div className="flex-1 h-[1px] bg-[#F1FAEE]"></div>
         </div>
 
-        <div className="w-full flex justify-center items-center gap-6">
+        <div className="w-full flex justify-center items-center gap-8">
           <button
-            className="aspect-square w-[60px] sm:w-[75px] bg-[#4F4F4F]/50 border border-[#4F4F4F] rounded-[20px] flex items-center justify-center hover:bg-[#4F4F4F]/70"
+            className="w-16 h-16 bg-[#4F4F4F] rounded-2xl flex items-center justify-center hover:bg-[#5F5F5F] transition-colors"
             onClick={handleGoogleAuth}
+            disabled={isLoading}
           >
             <Image
               src="/google.svg"
               alt="Google"
-              width={0}
-              height={0}
-              className="w-[24px] h-auto"
+              width={24}
+              height={24}
+              className="w-6 h-6"
             />
           </button>
 
           <button
-            className="aspect-square w-[60px] sm:w-[75px] bg-[#4F4F4F]/50 border border-[#4F4F4F] rounded-[20px] flex items-center justify-center hover:bg-[#4F4F4F]/70"
+            className="w-16 h-16 bg-[#4F4F4F] rounded-2xl flex items-center justify-center hover:bg-[#5F5F5F] transition-colors"
             onClick={handleAppleAuth}
+            disabled={isLoading}
           >
             <Image
               src="/apple.svg"
               alt="Apple"
-              width={0}
-              height={0}
-              className="w-[24px] h-auto"
+              width={24}
+              height={24}
+              className="w-6 h-6"
             />
           </button>
         </div>
@@ -200,8 +213,6 @@ const SignInPage = () => {
             Register Now
           </button>
         </div>
-
-        <div className="w-[134px] h-[5px] bg-white rounded-full"></div>
       </div>
     </OverlayWrapper>
   );

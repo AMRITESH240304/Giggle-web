@@ -6,9 +6,10 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
-import { toast } from "@/hooks/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import OverlayWrapper from "@/components/OverlayWrapper.tsx";
 import { loginWithApple, loginWithGoogle } from "@/lib/appwrite";
+import { Eye, EyeOff } from "lucide-react";
 
 const SignUpPage = () => {
   const [email, setEmail] = useState("");
@@ -16,8 +17,54 @@ const SignUpPage = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [name, setName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [passwordStrength, setPasswordStrength] = useState({
+    score: 0,
+    feedback: "",
+    checks: {
+      length: false,
+      uppercase: false,
+      lowercase: false,
+      number: false,
+      special: false,
+    },
+  });
 
   const router = useRouter();
+  const { toast } = useToast();
+
+  // Password strength checker
+  const checkPasswordStrength = (password: string) => {
+    const checks = {
+      length: password.length >= 8,
+      uppercase: /[A-Z]/.test(password),
+      lowercase: /[a-z]/.test(password),
+      number: /\d/.test(password),
+      special: /[!@#$%^&*(),.?":{}|<>]/.test(password),
+    };
+
+    const score = Object.values(checks).filter(Boolean).length;
+    let feedback = "";
+
+    if (score <= 2) {
+      feedback = "Weak";
+    } else if (score <= 3) {
+      feedback = "Fair";
+    } else if (score <= 4) {
+      feedback = "Good";
+    } else {
+      feedback = "Strong";
+    }
+
+    setPasswordStrength({ score, feedback, checks });
+  };
+
+  // Handle password change
+  const handlePasswordChange = (value: string) => {
+    setPassword(value);
+    checkPasswordStrength(value);
+  };
 
   const auth = useAuth();
   const { user, loading, register } = auth;
@@ -50,6 +97,16 @@ const SignUpPage = () => {
       return;
     }
 
+    // Check password strength
+    if (passwordStrength.score < 3) {
+      toast({
+        title: "Weak Password",
+        description: "Please create a stronger password with at least 3 of the required criteria",
+        variant: "destructive",
+      });
+      return;
+    }
+
     if (password.length < 6) {
       toast({
         title: "Error",
@@ -64,20 +121,22 @@ const SignUpPage = () => {
     try {
       await register(email, password, name);
 
-      const verificationUrl = `${window.location.origin}/verify-email`;
-
-      await sendVerificationEmail(verificationUrl);
+      // Send verification email
+      if (sendVerificationEmail) {
+        const verificationUrl = `${window.location.origin}/verify-email`;
+        await sendVerificationEmail(verificationUrl);
+      }
 
       toast({
         title: "Success",
-        description: "Account created successfully!",
+        description: "Account created successfully! Please check your email to verify your account.",
       });
       router.push("/verify-email");
     } catch (error: any) {
       console.error("Sign up error:", error);
       toast({
         title: "Sign Up Failed",
-        description: error?.message || "Failed to create account",
+        description: error?.message || "Failed to create account. Please try again.",
         variant: "destructive",
       });
     } finally {
@@ -130,134 +189,192 @@ const SignUpPage = () => {
   return (
     <OverlayWrapper>
       {/* Right Side Sign Up Form */}
-      <div className="w-full max-w-md bg-[#201F1F] rounded-3xl flex flex-col gap-6 justify-center items-center p-8 sm:p-10">
-        <div className="flex items-center justify-center space-x-2">
-          <h1 className="text-3xl font-sf-pro-display font-bold text-[#E63946]">Create</h1>
-          <h1 className="text-3xl font-sf-pro-display font-bold text-[#F1FAEE]">Account</h1>
+      <div className="w-full max-w-md bg-[#201F1F] rounded-3xl flex flex-col gap-8 justify-center items-center p-8 sm:p-10">
+        <div className="flex items-center justify-center">
+          <h1 className="text-4xl font-sf-pro-display font-bold text-[#E63946]">Welcome</h1>
         </div>
 
-        <div className="flex flex-col justify-center items-center gap-2 w-full">
+        <div className="flex flex-col justify-center items-center gap-4 w-full">
           <form
             className="flex flex-col gap-4 w-full"
             onSubmit={handleSubmit}
           >
-            <div className="w-[80%] mx-auto">
-              <label htmlFor="name" className="block text-[#F1FAEE] text-sm font-sf-pro-text font-medium mb-2 ml-2">
-                Full Name
-              </label>
-              <Input
-                id="name"
-                type="text"
-                placeholder="Enter your full name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className="bg-white text-[#201F1F] py-6 px-8 rounded-2xl w-full font-sf-pro-text"
-                autoComplete="name"
-                required
-              />
-            </div>
+            <Input
+              id="name"
+              type="text"
+              placeholder="Full Name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="bg-white text-[#201F1F] py-6 px-8 rounded-2xl w-full font-sf-pro-text placeholder:text-gray-500"
+              autoComplete="name"
+              required
+            />
             
-            <div className="w-[80%] mx-auto">
-              <label htmlFor="email" className="block text-[#F1FAEE] text-sm font-sf-pro-text font-medium mb-2 ml-2">
-                Email Address
-              </label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="Enter your email address"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="bg-white text-[#201F1F] py-6 px-8 rounded-2xl w-full font-sf-pro-text"
-                autoComplete="email"
-                required
-              />
-            </div>
+            <Input
+              id="email"
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="bg-white text-[#201F1F] py-6 px-8 rounded-2xl w-full font-sf-pro-text placeholder:text-gray-500"
+              autoComplete="email"
+              required
+            />
             
-            <div className="w-[80%] mx-auto">
-              <label htmlFor="password" className="block text-[#F1FAEE] text-sm font-sf-pro-text font-medium mb-2 ml-2">
-                Password
-              </label>
+            <div className="relative">
               <Input
                 id="password"
-                type="password"
-                placeholder="Create a password"
+                type={showPassword ? "text" : "password"}
+                placeholder="Password"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="bg-white text-[#201F1F] py-6 px-8 rounded-2xl w-full font-sf-pro-text"
+                onChange={(e) => handlePasswordChange(e.target.value)}
+                className="bg-white text-[#201F1F] py-6 px-8 pr-12 rounded-2xl w-full font-sf-pro-text placeholder:text-gray-500"
                 autoComplete="new-password"
                 required
               />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+              >
+                {showPassword ? (
+                  <EyeOff className="h-5 w-5" />
+                ) : (
+                  <Eye className="h-5 w-5" />
+                )}
+              </button>
             </div>
             
-            <div className="w-[80%] mx-auto">
-              <label htmlFor="confirmPassword" className="block text-[#F1FAEE] text-sm font-sf-pro-text font-medium mb-2 ml-2">
-                Confirm Password
-              </label>
+            {/* Password Strength Indicator */}
+            {password && (
+              <div className="mt-2 space-y-2">
+                <div className="flex items-center gap-2">
+                  <div className="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
+                    <div 
+                      className={`h-full transition-all duration-300 ${
+                        passwordStrength.score <= 2 ? 'bg-red-500' :
+                        passwordStrength.score <= 3 ? 'bg-yellow-500' :
+                        passwordStrength.score <= 4 ? 'bg-blue-500' :
+                        'bg-green-500'
+                      }`}
+                      style={{ width: `${(passwordStrength.score / 5) * 100}%` }}
+                    />
+                  </div>
+                  <span className={`text-sm font-medium ${
+                    passwordStrength.score <= 2 ? 'text-red-500' :
+                    passwordStrength.score <= 3 ? 'text-yellow-500' :
+                    passwordStrength.score <= 4 ? 'text-blue-500' :
+                    'text-green-500'
+                  }`}>
+                    {passwordStrength.feedback}
+                  </span>
+                </div>
+                
+                {/* Password Requirements */}
+                <div className="grid grid-cols-2 gap-1 text-xs">
+                  <div className={`flex items-center gap-1 ${passwordStrength.checks.length ? 'text-green-600' : 'text-gray-400'}`}>
+                    <span className="w-1 h-1 rounded-full bg-current"></span>
+                    At least 8 characters
+                  </div>
+                  <div className={`flex items-center gap-1 ${passwordStrength.checks.uppercase ? 'text-green-600' : 'text-gray-400'}`}>
+                    <span className="w-1 h-1 rounded-full bg-current"></span>
+                    Uppercase letter
+                  </div>
+                  <div className={`flex items-center gap-1 ${passwordStrength.checks.lowercase ? 'text-green-600' : 'text-gray-400'}`}>
+                    <span className="w-1 h-1 rounded-full bg-current"></span>
+                    Lowercase letter
+                  </div>
+                  <div className={`flex items-center gap-1 ${passwordStrength.checks.number ? 'text-green-600' : 'text-gray-400'}`}>
+                    <span className="w-1 h-1 rounded-full bg-current"></span>
+                    Number
+                  </div>
+                  <div className={`flex items-center gap-1 ${passwordStrength.checks.special ? 'text-green-600' : 'text-gray-400'}`}>
+                    <span className="w-1 h-1 rounded-full bg-current"></span>
+                    Special character
+                  </div>
+                </div>
+              </div>
+            )}
+            
+            <div className="relative">
               <Input
                 id="confirmPassword"
-                type="password"
-                placeholder="Confirm your password"
+                type={showConfirmPassword ? "text" : "password"}
+                placeholder="Confirm Password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                className="bg-white text-[#201F1F] py-6 px-8 rounded-2xl w-full font-sf-pro-text"
+                className="bg-white text-[#201F1F] py-6 px-8 pr-12 rounded-2xl w-full font-sf-pro-text placeholder:text-gray-500"
                 autoComplete="new-password"
                 required
               />
+              <button
+                type="button"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+              >
+                {showConfirmPassword ? (
+                  <EyeOff className="h-5 w-5" />
+                ) : (
+                  <Eye className="h-5 w-5" />
+                )}
+              </button>
             </div>
             
             <Button
               type="submit"
               disabled={isLoading}
-              className="bg-[#E63946] hover:bg-[#d32f2f] text-white font-sf-pro-text font-bold rounded-md py-6 w-[65%] mt-2 mx-auto"
+              className="bg-[#E63946] hover:bg-[#d32f2f] text-white font-sf-pro-text font-bold rounded-2xl py-6 w-full mt-4 text-lg"
             >
-              {isLoading ? "Creating Account..." : "Sign Up"}
+              {isLoading ? "SIGNING UP..." : "SIGN UP"}
             </Button>
           </form>
         </div>
 
-        <div className="flex items-center w-3/4">
+        <div className="flex items-center w-full px-4">
           <div className="flex-1 h-[1px] bg-[#F1FAEE]"></div>
-          <span className="px-4 text-[#F1FAEE] text-sm font-sf-pro-text">OR</span>
+          <span className="px-6 text-[#F1FAEE] text-sm font-sf-pro-text">OR</span>
           <div className="flex-1 h-[1px] bg-[#F1FAEE]"></div>
         </div>
 
-        <div className="w-full flex justify-center items-center gap-6">
+        <div className="w-full flex justify-center items-center gap-8">
           <button
-            className="aspect-square w-[60px] sm:w-[75px] bg-[#4F4F4F]/50 border border-[#4F4F4F] rounded-[20px] flex items-center justify-center hover:bg-[#4F4F4F]/70"
+            className="w-16 h-16 bg-[#4F4F4F] rounded-2xl flex items-center justify-center hover:bg-[#5F5F5F] transition-colors"
             onClick={handleGoogleAuth}
+            disabled={isLoading}
           >
             <Image
               src="/google.svg"
               alt="Google"
-              width={0}
-              height={0}
-              className="w-[24px] h-auto"
+              width={24}
+              height={24}
+              className="w-6 h-6"
             />
           </button>
 
           <button
-            className="aspect-square w-[60px] sm:w-[75px] bg-[#4F4F4F]/50 border border-[#4F4F4F] rounded-[20px] flex items-center justify-center hover:bg-[#4F4F4F]/70"
+            className="w-16 h-16 bg-[#4F4F4F] rounded-2xl flex items-center justify-center hover:bg-[#5F5F5F] transition-colors"
             onClick={handleAppleAuth}
+            disabled={isLoading}
           >
             <Image
               src="/apple.svg"
               alt="Apple"
-              width={0}
-              height={0}
-              className="w-[24px] h-auto"
+              width={24}
+              height={24}
+              className="w-6 h-6"
             />
           </button>
         </div>
 
         <div className="flex items-center justify-center space-x-2">
           <span className="text-[#F1FAEE] text-sm font-sf-pro-text">
-            Already have an account?
+            Already a member?
           </span>
           <button
             onClick={() => router.push("/sign-in")}
             className="text-[#E63946] text-sm font-sf-pro-text font-medium hover:underline"
           >
-            Sign In
+            Login
           </button>
         </div>
       </div>
