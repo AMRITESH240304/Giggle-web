@@ -37,7 +37,7 @@ const OnboardingLayout: React.FC<OnboardingLayoutProps> = ({ children }) => {
         </div>
 
         {/* Bottom left pointing hand - positioned on diagonal from modal center */}
-        <div className="absolute bottom-2 left-30  z-30">
+        <div className="absolute bottom-2 left-30 z-30">
           <div className="transform rotate-[0deg]">
             <Image
               src="/img-8-1.png"
