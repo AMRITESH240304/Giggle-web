@@ -24,7 +24,7 @@ const SignInPage = () => {
 
   useEffect(() => {
     if (!loading && user) {
-      router.push("/dashboard");
+      router.push("/user-type");
     }
   }, [loading, user, router]);
 
@@ -48,7 +48,7 @@ const SignInPage = () => {
         title: "Success",
         description: "Logged in successfully!",
       });
-      router.push("/dashboard"); // Redirect to dashboard after login
+      router.push("/user-type"); // Redirect to user type selection after login
     } catch (error: any) {
       console.error("Login error:", error);
       
