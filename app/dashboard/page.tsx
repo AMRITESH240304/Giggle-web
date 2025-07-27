@@ -19,14 +19,9 @@ const DashboardPage = () => {
     }
   };
 
-  useEffect(()=>{
-    if (!user?.emailVerification && pathname === "/dashboard"){
-      router.push(`/verify-email`)
-    }
-  })
-
-      
-  if(user?.emailVerification){
+  // Optional: Show verification banner instead of forced redirect
+  // Users can still access dashboard but will see a verification prompt
+  
   return (
     <div className="flex flex-col items-center justify-center min-h-screen">
       <div className="flex flex-col items-center justify-center space-y-6">
@@ -46,7 +41,6 @@ const DashboardPage = () => {
       </div>
     </div>
   );
-}
 };
 
 export default DashboardPage;

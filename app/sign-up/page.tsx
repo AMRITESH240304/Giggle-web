@@ -17,6 +17,7 @@ const SignUpPage = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [name, setName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(""); // Add error state
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [passwordStrength, setPasswordStrength] = useState({
@@ -78,20 +79,25 @@ const SignUpPage = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(""); // Clear previous errors
 
     if (!email || !password || !confirmPassword || !name) {
+      const errorMsg = "Please fill in all fields";
+      setError(errorMsg);
       toast({
         title: "Error",
-        description: "Please fill in all fields",
+        description: errorMsg,
         variant: "destructive",
       });
       return;
     }
 
     if (password !== confirmPassword) {
+      const errorMsg = "Passwords do not match";
+      setError(errorMsg);
       toast({
         title: "Error",
-        description: "Passwords do not match",
+        description: errorMsg,
         variant: "destructive",
       });
       return;
@@ -99,18 +105,22 @@ const SignUpPage = () => {
 
     // Check password strength
     if (passwordStrength.score < 3) {
+      const errorMsg = "Please create a stronger password with at least 3 of the required criteria";
+      setError(errorMsg);
       toast({
         title: "Weak Password",
-        description: "Please create a stronger password with at least 3 of the required criteria",
+        description: errorMsg,
         variant: "destructive",
       });
       return;
     }
 
     if (password.length < 6) {
+      const errorMsg = "Password must be at least 6 characters long";
+      setError(errorMsg);
       toast({
         title: "Error",
-        description: "Password must be at least 6 characters long",
+        description: errorMsg,
         variant: "destructive",
       });
       return;
@@ -134,11 +144,64 @@ const SignUpPage = () => {
       router.push("/verify-email");
     } catch (error: any) {
       console.error("Sign up error:", error);
-      toast({
-        title: "Sign Up Failed",
-        description: error?.message || "Failed to create account. Please try again.",
-        variant: "destructive",
-      });
+      const errorMessage = error?.message || "Failed to create account. Please try again.";
+      
+      // Log the full error for debugging
+      console.log("Full error object:", error);
+      console.log("Error message:", errorMessage);
+      console.log("Error code:", error.code);
+      console.log("Error type:", error.type);
+      
+      // Show different toast messages based on error type or code
+      if (error.code === 409 || (errorMessage.toLowerCase().includes("user") && errorMessage.toLowerCase().includes("already"))) {
+        const userExistsMsg = "User already exists. An account with this email already exists. Please try signing in instead.";
+        setError(userExistsMsg);
+        toast({
+          title: "User Already Exists",
+          description: "An account with this email already exists. Please try signing in instead.",
+          variant: "destructive",
+        });
+      } else if (error.code === 401 || errorMessage.toLowerCase().includes("invalid") || errorMessage.toLowerCase().includes("credential")) {
+        const invalidCredsMsg = "Invalid credentials. Please check your email and password and try again.";
+        setError(invalidCredsMsg);
+        toast({
+          title: "Invalid Credentials",
+          description: "Please check your email and password and try again.",
+          variant: "destructive",
+        });
+      } else if (error.code === 412 || (errorMessage.toLowerCase().includes("provider") && errorMessage.toLowerCase().includes("disabled"))) {
+        const serviceUnavailableMsg = "Service unavailable. Email signup is currently disabled. Please enable it in Appwrite console.";
+        setError(serviceUnavailableMsg);
+        toast({
+          title: "Service Unavailable",
+          description: "Email signup is currently disabled. Please enable it in Appwrite console.",
+          variant: "destructive",
+        });
+      } else if (errorMessage.toLowerCase().includes("password")) {
+        const passwordErrorMsg = "Password error. Password must be at least 8 characters long and meet security requirements.";
+        setError(passwordErrorMsg);
+        toast({
+          title: "Password Error",
+          description: "Password must be at least 8 characters long and meet security requirements.",
+          variant: "destructive",
+        });
+      } else if (errorMessage.toLowerCase().includes("email")) {
+        const emailErrorMsg = "Email error. Please enter a valid email address.";
+        setError(emailErrorMsg);
+        toast({
+          title: "Email Error",
+          description: "Please enter a valid email address.",
+          variant: "destructive",
+        });
+      } else {
+        const genericErrorMsg = `Signup failed: ${errorMessage}${error.code ? ` (Code: ${error.code})` : ''}`;
+        setError(genericErrorMsg);
+        toast({
+          title: "Sign Up Failed",
+          description: `${errorMessage}${error.code ? ` (Code: ${error.code})` : ''}`,
+          variant: "destructive",
+        });
+      }
     } finally {
       setIsLoading(false);
     }
@@ -199,6 +262,27 @@ const SignUpPage = () => {
             className="flex flex-col gap-4 w-full"
             onSubmit={handleSubmit}
           >
+            {/* Error Message Display */}
+            {error && (
+              <div className="p-3 bg-red-50 border border-red-200 text-red-800 rounded-lg">
+                <div className="flex items-start">
+                  <div className="flex-shrink-0">
+                    <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                    </svg>
+                  </div>
+                  <div className="ml-3">
+                    <h3 className="text-sm font-medium text-red-800">
+                      Signup Error
+                    </h3>
+                    <div className="mt-1 text-sm text-red-700">
+                      {error}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+            
             <Input
               id="name"
               type="text"

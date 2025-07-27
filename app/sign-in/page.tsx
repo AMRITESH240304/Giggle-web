@@ -14,6 +14,7 @@ const SignInPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(""); // Add error state
   const [showPassword, setShowPassword] = useState(false);
 
   const { toast } = useToast();
@@ -30,11 +31,14 @@ const SignInPage = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(""); // Clear previous errors
 
     if (!email || !password) {
+      const errorMsg = "Please fill in all fields";
+      setError(errorMsg);
       toast({
         title: "Error",
-        description: "Please fill in all fields",
+        description: errorMsg,
         variant: "destructive",
       });
       return;
@@ -51,18 +55,56 @@ const SignInPage = () => {
       router.push("/user-type"); // Redirect to user type selection after login
     } catch (error: any) {
       console.error("Login error:", error);
+      const errorMessage = error?.message || "Login failed. Please try again.";
       
-      // Check if it's an authentication error specifically
-      const isAuthError = error?.message?.toLowerCase().includes('invalid') || 
-                         error?.message?.toLowerCase().includes('wrong') ||
-                         error?.message?.toLowerCase().includes('incorrect') ||
-                         error?.code === 401;
+      // Log the full error for debugging
+      console.log("Full error object:", error);
+      console.log("Error message:", errorMessage);
+      console.log("Error code:", error.code);
+      console.log("Error type:", error.type);
       
-      toast({
-        title: "Invalid Credentials",
-        description: isAuthError ? "Invalid email or password. Please check your credentials and try again." : (error?.message || "Login failed. Please try again."),
-        variant: "destructive",
-      });
+      // Show different error messages based on error type or code
+      if (error.code === 401 || errorMessage.toLowerCase().includes("invalid") || errorMessage.toLowerCase().includes("wrong") || errorMessage.toLowerCase().includes("incorrect") || errorMessage.toLowerCase().includes("credential")) {
+        const invalidCredsMsg = "Invalid credentials. Please check your email and password and try again.";
+        setError(invalidCredsMsg);
+        toast({
+          title: "Invalid Credentials",
+          description: "Invalid email or password. Please check your credentials and try again.",
+          variant: "destructive",
+        });
+      } else if (error.code === 404 || errorMessage.toLowerCase().includes("user") && errorMessage.toLowerCase().includes("not found")) {
+        const userNotFoundMsg = "User not found. Please check your email or sign up for a new account.";
+        setError(userNotFoundMsg);
+        toast({
+          title: "User Not Found",
+          description: "No account found with this email. Please check your email or sign up.",
+          variant: "destructive",
+        });
+      } else if (error.code === 429 || errorMessage.toLowerCase().includes("too many")) {
+        const tooManyAttemptsMsg = "Too many login attempts. Please wait a moment before trying again.";
+        setError(tooManyAttemptsMsg);
+        toast({
+          title: "Too Many Attempts",
+          description: "Please wait a moment before trying again.",
+          variant: "destructive",
+        });
+      } else if (error.code === 412 || errorMessage.toLowerCase().includes("provider") && errorMessage.toLowerCase().includes("disabled")) {
+        const serviceUnavailableMsg = "Service unavailable. Email login is currently disabled.";
+        setError(serviceUnavailableMsg);
+        toast({
+          title: "Service Unavailable",
+          description: "Email login is currently disabled. Please contact support.",
+          variant: "destructive",
+        });
+      } else {
+        const genericErrorMsg = `Login failed: ${errorMessage}${error.code ? ` (Code: ${error.code})` : ''}`;
+        setError(genericErrorMsg);
+        toast({
+          title: "Login Failed",
+          description: `${errorMessage}${error.code ? ` (Code: ${error.code})` : ''}`,
+          variant: "destructive",
+        });
+      }
     } finally {
       setIsLoading(false);
     }
@@ -71,6 +113,7 @@ const SignInPage = () => {
   const handleGoogleAuth = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
+    setError(""); // Clear previous errors
     try {
       await loginWithGoogle();
       toast({
@@ -79,9 +122,11 @@ const SignInPage = () => {
       });
     } catch (error: any) {
       console.error("Login error:", error);
+      const errorMsg = "Google authentication failed. Please try again.";
+      setError(errorMsg);
       toast({
         title: "Authentication Failed",
-        description: error?.message || "Google authentication failed. Please try again.",
+        description: error?.message || errorMsg,
         variant: "destructive",
       });
     } finally {
@@ -92,6 +137,7 @@ const SignInPage = () => {
   const handleAppleAuth = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
+    setError(""); // Clear previous errors
     try {
       await loginWithApple();
       toast({
@@ -100,9 +146,11 @@ const SignInPage = () => {
       });
     } catch (error: any) {
       console.error("Login error:", error);
+      const errorMsg = "Apple authentication failed. Please try again.";
+      setError(errorMsg);
       toast({
         title: "Authentication Failed",
-        description: error?.message || "Apple authentication failed. Please try again.",
+        description: error?.message || errorMsg,
         variant: "destructive",
       });
     } finally {
@@ -123,6 +171,27 @@ const SignInPage = () => {
             className="flex flex-col gap-4 w-full"
             onSubmit={handleSubmit}
           >
+            {/* Error Message Display */}
+            {error && (
+              <div className="p-3 bg-red-50 border border-red-200 text-red-800 rounded-lg">
+                <div className="flex items-start">
+                  <div className="flex-shrink-0">
+                    <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                    </svg>
+                  </div>
+                  <div className="ml-3">
+                    <h3 className="text-sm font-medium text-red-800">
+                      Login Error
+                    </h3>
+                    <div className="mt-1 text-sm text-red-700">
+                      {error}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+            
             <Input
               id="email"
               type="email"
