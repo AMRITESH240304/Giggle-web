@@ -14,6 +14,7 @@ const SignInPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(""); // Add error state for clearing
   const [showPassword, setShowPassword] = useState(false);
 
   const { toast } = useToast();
@@ -24,18 +25,24 @@ const SignInPage = () => {
 
   useEffect(() => {
     if (!loading && user) {
-      router.push("/dashboard");
+      router.push("/user-type");
     }
   }, [loading, user, router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(""); // Clear previous errors
 
     if (!email || !password) {
+      const errorMsg = "Please fill in all fields";
+      setError(errorMsg);
+      console.log("Showing validation toast"); // Debug log
       toast({
-        title: "Error",
-        description: "Please fill in all fields",
+        title: "🚨 Validation Error",
+        description: errorMsg,
         variant: "destructive",
+        duration: 8000, // Make it stay longer for testing
+        className: "bg-red-500 text-white border-red-600 shadow-2xl z-[9999]",
       });
       return;
     }
@@ -48,21 +55,60 @@ const SignInPage = () => {
         title: "Success",
         description: "Logged in successfully!",
       });
-      router.push("/dashboard"); // Redirect to dashboard after login
+      router.push("/user-type"); // Redirect to user type selection after login
     } catch (error: any) {
       console.error("Login error:", error);
+      const errorMessage = error?.message || "Login failed. Please try again.";
       
-      // Check if it's an authentication error specifically
-      const isAuthError = error?.message?.toLowerCase().includes('invalid') || 
-                         error?.message?.toLowerCase().includes('wrong') ||
-                         error?.message?.toLowerCase().includes('incorrect') ||
-                         error?.code === 401;
+      // Log the full error for debugging
+      console.log("Full error object:", error);
+      console.log("Error message:", errorMessage);
+      console.log("Error code:", error.code);
+      console.log("Error type:", error.type);
       
-      toast({
-        title: "Invalid Credentials",
-        description: isAuthError ? "Invalid email or password. Please check your credentials and try again." : (error?.message || "Login failed. Please try again."),
-        variant: "destructive",
-      });
+      // Show different error messages based on error type or code
+      if (error.code === 401 || errorMessage.toLowerCase().includes("invalid") || errorMessage.toLowerCase().includes("wrong") || errorMessage.toLowerCase().includes("incorrect") || errorMessage.toLowerCase().includes("credential")) {
+        const invalidCredsMsg = "Invalid credentials. Please check your email and password and try again.";
+        setError(invalidCredsMsg);
+        console.log("Showing invalid credentials toast"); // Debug log
+        toast({
+          title: "Invalid Credentials",
+          description: "Invalid email or password. Please check your credentials and try again.",
+          variant: "destructive",
+        });
+      } else if (error.code === 404 || errorMessage.toLowerCase().includes("user") && errorMessage.toLowerCase().includes("not found")) {
+        const userNotFoundMsg = "User not found. Please check your email or sign up for a new account.";
+        setError(userNotFoundMsg);
+        toast({
+          title: "User Not Found",
+          description: "No account found with this email. Please check your email or sign up.",
+          variant: "destructive",
+        });
+      } else if (error.code === 429 || errorMessage.toLowerCase().includes("too many")) {
+        const tooManyAttemptsMsg = "Too many login attempts. Please wait a moment before trying again.";
+        setError(tooManyAttemptsMsg);
+        toast({
+          title: "Too Many Attempts",
+          description: "Please wait a moment before trying again.",
+          variant: "destructive",
+        });
+      } else if (error.code === 412 || errorMessage.toLowerCase().includes("provider") && errorMessage.toLowerCase().includes("disabled")) {
+        const serviceUnavailableMsg = "Service unavailable. Email login is currently disabled.";
+        setError(serviceUnavailableMsg);
+        toast({
+          title: "Service Unavailable",
+          description: "Email login is currently disabled. Please contact support.",
+          variant: "destructive",
+        });
+      } else {
+        const genericErrorMsg = `Login failed: ${errorMessage}${error.code ? ` (Code: ${error.code})` : ''}`;
+        setError(genericErrorMsg);
+        toast({
+          title: "Login Failed",
+          description: `${errorMessage}${error.code ? ` (Code: ${error.code})` : ''}`,
+          variant: "destructive",
+        });
+      }
     } finally {
       setIsLoading(false);
     }
@@ -71,6 +117,7 @@ const SignInPage = () => {
   const handleGoogleAuth = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
+    setError(""); // Clear previous errors
     try {
       await loginWithGoogle();
       toast({
@@ -79,9 +126,11 @@ const SignInPage = () => {
       });
     } catch (error: any) {
       console.error("Login error:", error);
+      const errorMsg = "Google authentication failed. Please try again.";
+      setError(errorMsg);
       toast({
         title: "Authentication Failed",
-        description: error?.message || "Google authentication failed. Please try again.",
+        description: error?.message || errorMsg,
         variant: "destructive",
       });
     } finally {
@@ -92,6 +141,7 @@ const SignInPage = () => {
   const handleAppleAuth = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
+    setError(""); // Clear previous errors
     try {
       await loginWithApple();
       toast({
@@ -100,9 +150,11 @@ const SignInPage = () => {
       });
     } catch (error: any) {
       console.error("Login error:", error);
+      const errorMsg = "Apple authentication failed. Please try again.";
+      setError(errorMsg);
       toast({
         title: "Authentication Failed",
-        description: error?.message || "Apple authentication failed. Please try again.",
+        description: error?.message || errorMsg,
         variant: "destructive",
       });
     } finally {

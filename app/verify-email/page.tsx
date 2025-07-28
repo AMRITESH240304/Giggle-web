@@ -41,9 +41,9 @@ const VerifyEmailContent = ({email}:{email:string}) => {
         title: "Success",
         description: "Email verified successfully!",
       });
-      // auth state update waiting
+      // Redirect to user type selection instead of dashboard
       setTimeout(() => {
-        router.push("/dashboard");
+        router.push("/user-type");
       }, 1000);
     } catch (error: any) {
       console.error("Verification error:", error);
@@ -85,7 +85,7 @@ const VerifyEmailContent = ({email}:{email:string}) => {
   };
 
   const handleContinue = () => {
-    router.push("/dashboard");
+    router.push("/user-type");
   };
 
   return (

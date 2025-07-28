@@ -52,11 +52,14 @@ export default function RootLayout({
               <ClientOnly>
                 <AuthProvider>
                   {children}
-                  <Toaster />
                 </AuthProvider>
               </ClientOnly>
             </div>
           </div>
+          {/* Move Toaster outside overlay to ensure visibility */}
+          <ClientOnly>
+            <Toaster />
+          </ClientOnly>
         </ThemeProvider>
       </body>
     </html>
