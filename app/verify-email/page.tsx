@@ -154,14 +154,12 @@ const VerifyEmailPage = () => {
   const {user} = useAuth()
   const router = useRouter()
   
-
-  useEffect(()=>{
-    setTimeout(()=>{
-      if (!user){
-        router.push("/sign-up")
-      }
-    },700)
-  },[])
+  useEffect(() => {
+    if (user?.emailVerification){
+      router.push("/dashboard")
+    }
+  })
+  
 
   if(user){
     return (

@@ -16,15 +16,14 @@ export default function LandingPage() {
 
   const { user, loading } = auth;
 
-  useEffect(() => {
-    console.log("loading", loading);
-    console.log("user", user);
-
-    if (!loading && user) {
-      console.log("redirecting to dashboard");
-      router.push("/dashboard");
+  useEffect(()=>{
+    if (!user?.emailVerification){
+      router.push(`/verify-email`)
     }
-  }, [loading, user, router]);
+    else if (user){
+      router.push(`/dashboard`)
+    }
+  })
 
   if (loading || user) {
     return <LoadingScreen message="Loading..." />;

@@ -22,12 +22,11 @@ const SignUpPage = () => {
   const auth = useAuth();
   const { user, loading, register } = auth;
   const sendVerificationEmail = auth?.sendVerificationEmail;
-
-  useEffect(() => {
-    if (!loading && user) {
-      router.push("/dashboard");
-    }
-  }, [loading, user, router]);
+  // useEffect(()=>{
+  //   if (!user?.emailVerification){
+  //     router.push(`/verify-email`)
+  //   }
+  // })
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

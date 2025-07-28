@@ -20,11 +20,11 @@ const SignInPage = () => {
   const { user, loading, login, loginWithApple, loginWithGoogle } = auth;
   const router = useRouter();
 
-  useEffect(() => {
-    if (!loading && user) {
-      router.push("/dashboard");
+  useEffect(()=>{
+    if (!user?.emailVerification){
+      router.push(`/verify-email`)
     }
-  }, [loading, user, router]);
+  })
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

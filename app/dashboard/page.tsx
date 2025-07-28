@@ -20,7 +20,7 @@ const DashboardPage = () => {
   };
 
   useEffect(()=>{
-    if (!user?.emailVerification && pathname === "/dashboard"){
+    if (!user?.emailVerification){
       router.push(`/verify-email`)
     }
   })
