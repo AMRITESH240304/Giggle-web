@@ -14,7 +14,7 @@ const SignInPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(""); // Add error state
+  const [error, setError] = useState(""); // Add error state for clearing
   const [showPassword, setShowPassword] = useState(false);
 
   const { toast } = useToast();
@@ -36,10 +36,13 @@ const SignInPage = () => {
     if (!email || !password) {
       const errorMsg = "Please fill in all fields";
       setError(errorMsg);
+      console.log("Showing validation toast"); // Debug log
       toast({
-        title: "Error",
+        title: "🚨 Validation Error",
         description: errorMsg,
         variant: "destructive",
+        duration: 8000, // Make it stay longer for testing
+        className: "bg-red-500 text-white border-red-600 shadow-2xl z-[9999]",
       });
       return;
     }
@@ -67,6 +70,7 @@ const SignInPage = () => {
       if (error.code === 401 || errorMessage.toLowerCase().includes("invalid") || errorMessage.toLowerCase().includes("wrong") || errorMessage.toLowerCase().includes("incorrect") || errorMessage.toLowerCase().includes("credential")) {
         const invalidCredsMsg = "Invalid credentials. Please check your email and password and try again.";
         setError(invalidCredsMsg);
+        console.log("Showing invalid credentials toast"); // Debug log
         toast({
           title: "Invalid Credentials",
           description: "Invalid email or password. Please check your credentials and try again.",
@@ -171,27 +175,6 @@ const SignInPage = () => {
             className="flex flex-col gap-4 w-full"
             onSubmit={handleSubmit}
           >
-            {/* Error Message Display */}
-            {error && (
-              <div className="p-3 bg-red-50 border border-red-200 text-red-800 rounded-lg">
-                <div className="flex items-start">
-                  <div className="flex-shrink-0">
-                    <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
-                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                    </svg>
-                  </div>
-                  <div className="ml-3">
-                    <h3 className="text-sm font-medium text-red-800">
-                      Login Error
-                    </h3>
-                    <div className="mt-1 text-sm text-red-700">
-                      {error}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-            
             <Input
               id="email"
               type="email"
