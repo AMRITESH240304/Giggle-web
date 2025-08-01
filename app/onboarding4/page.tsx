@@ -28,160 +28,168 @@ const LocationContactInfoPage: React.FC = () => {
     socialMedia: "",
   });
 
-  const handleChange = (field: keyof ContactFormData) => (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData((prev) => ({
-      ...prev,
-      [field]: e.target.value,
-    }));
-  };
+  const handleChange =
+    (field: keyof ContactFormData) =>
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setFormData((prev) => ({
+        ...prev,
+        [field]: e.target.value,
+      }));
+    };
 
   const handleSubmit = () => {
     console.log("Submitted Data:", formData);
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#1a1a1a] relative overflow-hidden px-6">
-      {/* Background Image */}
+    <div className="min-h-screen w-full flex relative overflow-hidden bg-black">
+      {/* Background */}
       <div className="absolute inset-0 z-0">
-        <img src="/main bg.png" alt="Background" className="w-full h-full object-cover" />
+        <img
+          src="/main bg.png"
+          alt="Background"
+          className="w-full h-full object-cover"
+        />
       </div>
 
-      {/* 3D Hand Image */}
-      <div className="absolute bottom-20 right-40 w-32 h-32 z-30">
-        <img src="/hand.png" alt="Hand" className="w-full h-full object-contain" />
-      </div>
-
-      {/* Layout Container */}
-      <div className="relative z-20 w-full max-w-7xl flex items-start justify-between gap-8">
-        {/* Left Text Section */}
-        <div className="text-white max-w-md flex-shrink-0 mt-20">
-          <h1 className="text-5xl md:text-6xl lg:text-7xl font-black leading-tight">
-            <span className="block">Build a</span>
-            <span className="block">profile</span>
-            <span className="block">seekers</span>
-            <span className="block">can</span>
-            <span className="block">rely on</span>
+      {/* Left Text Section */}
+      <div className="w-1/2 flex items-center justify-center px-12 z-10">
+        <div className="text-white space-y-2">
+          <h1 className="text-5xl font-extrabold leading-tight">
+            <div>Build a</div>
+            <div>profile</div>
+            <div>seekers</div>
+            <div>can</div>
+            <div>rely on</div>
           </h1>
         </div>
+      </div>
 
-        {/* Right Form Section */}
-        <div className="flex-1 max-w-xl bg-[#494949] bg-opacity-90 backdrop-blur-md py-20 px-30 mt-[-100px]  shadow-2xl text-white">
-          <h2 className="text-2xl font-bold mb-8 text-red-500">Location & Contact Info</h2>
-          <div className="space-y-6">
-            {/* 2 Columns for City/State and Country/Pincode */}
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <div className="block text-sm font-medium mb-2 text-white">City</div>
-                <input
-                  type="text"
-                  placeholder="Enter Full Name"
-                  value={formData.city}
-                  onChange={handleChange("city")}
-                  className="w-full px-4 py-3 rounded-lg bg-gray-300 text-black placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-red-500 border-0"
-                />
-              </div>
-              <div>
-                <div className="block text-sm font-medium mb-2 text-white">State</div>
-                <input
-                  type="text"
-                  placeholder="Enter Full Name"
-                  value={formData.state}
-                  onChange={handleChange("state")}
-                  className="w-full px-4 py-3 rounded-lg bg-gray-300 text-black placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-red-500 border-0"
-                />
-              </div>
-            </div>
+      {/* Right Form Section */}
+      <div className="w-1/2 flex items-start justify-center   z-10">
+        <div className="w-full max-w-lg bg-[#494949]/90 backdrop-blur-md text-white p-10 rounded-lg shadow-2xl">
+  <h2 className="text-2xl font-bold mb-8 text-red-500">
+    Location & Contact Info
+  </h2>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <div className="block text-sm font-medium mb-2 text-white">Country</div>
-                <input
-                  type="text"
-                  placeholder="Enter Full Name"
-                  value={formData.country}
-                  onChange={handleChange("country")}
-                  className="w-full px-4 py-3 rounded-lg bg-gray-300 text-black placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-red-500 border-0"
-                />
-              </div>
-              <div>
-                <div className="block text-sm font-medium mb-2 text-white">Pincode</div>
-                <input
-                  type="text"
-                  placeholder="Enter Full Name"
-                  value={formData.pincode}
-                  onChange={handleChange("pincode")}
-                  className="w-full px-4 py-3 rounded-lg bg-gray-300 text-black placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-red-500 border-0"
-                />
-              </div>
-            </div>
+  <div className="grid grid-cols-2 gap-4 mb-4">
+    <div>
+      <label className="block mb-1 text-sm font-medium">City</label>
+      <input
+        type="text"
+        placeholder="Enter City"
+        value={formData.city}
+        onChange={handleChange("city")}
+        className="w-full px-4 py-3 rounded bg-gray-200 text-black placeholder-gray-600 focus:ring-2 focus:ring-red-500 outline-none"
+      />
+    </div>
+    <div>
+      <label className="block mb-1 text-sm font-medium">State</label>
+      <input
+        type="text"
+        placeholder="Enter State"
+        value={formData.state}
+        onChange={handleChange("state")}
+        className="w-full px-4 py-3 rounded bg-gray-200 text-black placeholder-gray-600 focus:ring-2 focus:ring-red-500 outline-none"
+      />
+    </div>
+  </div>
 
-            {/* Full-width Fields */}
-            <div>
-              <div className="block text-sm font-medium mb-2 text-white">Full Address</div>
-              <input
-                type="text"
-                placeholder="Enter Full Name"
-                value={formData.address}
-                onChange={handleChange("address")}
-                className="w-full px-4 py-3 rounded-lg bg-gray-300 text-black placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-red-500 border-0"
-              />
-            </div>
+  <div className="grid grid-cols-2 gap-4 mb-4">
+    <div>
+      <label className="block mb-1 text-sm font-medium">Country</label>
+      <input
+        type="text"
+        placeholder="Enter Country"
+        value={formData.country}
+        onChange={handleChange("country")}
+        className="w-full px-4 py-3 rounded bg-gray-200 text-black placeholder-gray-600 focus:ring-2 focus:ring-red-500 outline-none"
+      />
+    </div>
+    <div>
+      <label className="block mb-1 text-sm font-medium">Pincode</label>
+      <input
+        type="text"
+        placeholder="Enter Pincode"
+        value={formData.pincode}
+        onChange={handleChange("pincode")}
+        className="w-full px-4 py-3 rounded bg-gray-200 text-black placeholder-gray-600 focus:ring-2 focus:ring-red-500 outline-none"
+      />
+    </div>
+  </div>
 
-            <div>
-              <div className="block text-sm font-medium mb-2 text-white">Company Email</div>
-              <input
-                type="email"
-                placeholder="Enter Full Name"
-                value={formData.email}
-                onChange={handleChange("email")}
-                className="w-full px-4 py-3 rounded-lg bg-gray-300 text-black placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-red-500 border-0"
-              />
-            </div>
+  <div className="space-y-4">
+    <div>
+      <label className="block mb-1 text-sm font-medium">Full Address</label>
+      <input
+        type="text"
+        placeholder="Enter Full Address"
+        value={formData.address}
+        onChange={handleChange("address")}
+        className="w-full px-4 py-3 rounded bg-gray-200 text-black placeholder-gray-600 focus:ring-2 focus:ring-red-500 outline-none"
+      />
+    </div>
 
-            <div>
-              <div className="block text-sm font-medium mb-2 text-white">Company Phone Number</div>
-              <input
-                type="tel"
-                placeholder="Enter Full Name"
-                value={formData.phone}
-                onChange={handleChange("phone")}
-                className="w-full px-4 py-3 rounded-lg bg-gray-300 text-black placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-red-500 border-0"
-              />
-            </div>
+    <div>
+      <label className="block mb-1 text-sm font-medium">Company Email</label>
+      <input
+        type="email"
+        placeholder="Enter Company Email"
+        value={formData.email}
+        onChange={handleChange("email")}
+        className="w-full px-4 py-3 rounded bg-gray-200 text-black placeholder-gray-600 focus:ring-2 focus:ring-red-500 outline-none"
+      />
+    </div>
 
-            <div>
-              <div className="block text-sm font-medium mb-2 text-white">Website (optional)</div>
-              <input
-                type="text"
-                placeholder="Enter Full Name"
-                value={formData.website}
-                onChange={handleChange("website")}
-                className="w-full px-4 py-3 rounded-lg bg-gray-300 text-black placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-red-500 border-0"
-              />
-            </div>
+    <div>
+      <label className="block mb-1 text-sm font-medium">Company Phone Number</label>
+      <input
+        type="tel"
+        placeholder="Enter Company Phone Number"
+        value={formData.phone}
+        onChange={handleChange("phone")}
+        className="w-full px-4 py-3 rounded bg-gray-200 text-black placeholder-gray-600 focus:ring-2 focus:ring-red-500 outline-none"
+      />
+    </div>
 
-            <div>
-              <div className="block text-sm font-medium mb-2 text-white">Social Media Links (optional)</div>
-              <input
-                type="text"
-                placeholder="Enter Full Name"
-                value={formData.socialMedia}
-                onChange={handleChange("socialMedia")}
-                className="w-full px-4 py-3 rounded-lg bg-gray-300 text-black placeholder-gray-600 focus:outline-none focus:ring-2 focus:ring-red-500 border-0"
-              />
-            </div>
+    <div>
+      <label className="block mb-1 text-sm font-medium">Website (optional)</label>
+      <input
+        type="text"
+        placeholder="Enter Website"
+        value={formData.website}
+        onChange={handleChange("website")}
+        className="w-full px-4 py-3 rounded bg-gray-200 text-black placeholder-gray-600 focus:ring-2 focus:ring-red-500 outline-none"
+      />
+    </div>
 
-            {/* Submit Button */}
-            <div className="pt-4 flex justify-end">
-              <button
-                onClick={handleSubmit}
-                className="bg-red-600 hover:bg-red-700 text-white font-semibold py-3 px-8 rounded-lg transition-all duration-300 transform hover:scale-105"
-              >
-                Next
-              </button>
-            </div>
-          </div>
-        </div>
+    <div>
+      <label className="block mb-1 text-sm font-medium">Social Media Links (optional)</label>
+      <input
+        type="text"
+        placeholder="Enter Social Media Links"
+        value={formData.socialMedia}
+        onChange={handleChange("socialMedia")}
+        className="w-full px-4 py-3 rounded bg-gray-200 text-black placeholder-gray-600 focus:ring-2 focus:ring-red-500 outline-none"
+      />
+    </div>
+  </div>
+
+  {/* Hand and Next Button */}
+  <div className="relative mt-8 flex justify-end items-center">
+    <img
+      src="/img-10-2.png"
+      alt="Hand Pointer"
+      className="absolute left-[200px] bottom-[-80px] w-28 h-28 z-10"
+    />
+    <button
+      onClick={handleSubmit}
+      className="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-8 rounded transition-all duration-300 z-20"
+    >
+      Next
+    </button>
+  </div>
+</div>
       </div>
 
       {/* Navigation Arrows */}
