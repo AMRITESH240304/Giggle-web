@@ -19,14 +19,6 @@ const DashboardPage = () => {
     }
   };
 
-  useEffect(()=>{
-    if (!user?.emailVerification){
-      router.push(`/verify-email`)
-    }
-  })
-
-      
-  if(user?.emailVerification){
   return (
     <div className="flex flex-col items-center justify-center min-h-screen">
       <div className="flex flex-col items-center justify-center space-y-6">
@@ -46,7 +38,6 @@ const DashboardPage = () => {
       </div>
     </div>
   );
-}
 };
 
 export default DashboardPage;
