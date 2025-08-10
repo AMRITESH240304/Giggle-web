@@ -1,8 +1,11 @@
 "use client";
 
 import React, { useState } from "react";
-import Image from "next/image";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import Image from "next/image";
+import { useRouter, useSearchParams } from "next/navigation";
+import OnboardingLayout from "@/components/OnboardingLayout";
+import WelcomeContent from "@/components/WelcomeContent";
 
 interface FormData {
   name: string;
