@@ -5,7 +5,7 @@ import Image from "next/image"
 
 export default function UploadResume(){
     return(
-        <div className="flex gap-x-32">
+        <div className="flex gap-x-32 ml-52 mr-52 mt-20">
             <div>
                 <Image src={"/upload-resume-design-vec.svg"} width={20} height={20} alt="vector" className="w-full h-full"/>
             </div>

@@ -19,6 +19,7 @@ const VerifyEmailContent = ({email}:{email:string}) => {
   const verifyEmail = auth?.verifyEmail;
   const sendVerificationEmail = auth?.sendVerificationEmail;
   const {user} = useAuth()
+  console.log("check user",user)
 
   const userId = searchParams.get("userId");
   const secret = searchParams.get("secret");
@@ -155,6 +156,9 @@ const VerifyEmailPage = () => {
   const router = useRouter()
   
   useEffect(() => {
+    if (!user){
+      router.push("sign-up")
+    }
     if (user?.emailVerification){
       router.push("/dashboard")
     }

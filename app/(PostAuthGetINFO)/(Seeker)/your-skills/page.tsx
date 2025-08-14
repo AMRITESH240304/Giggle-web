@@ -10,7 +10,7 @@ export default function YourSkills() {
     ];
 
     return (
-        <div className="bg-[#ffffff11] flex flex-col justify-center items-center rounded-lg p-16">
+        <div className="bg-[#ffffff11] flex flex-col justify-center items-center rounded-lg p-16 ml-52 mr-52 mt-20">
             <div className="flex gap-x-2 text-4xl font-bold mb-16">
                 <p className="text-[#E63946]">Your</p>
                 <p className="text-white">Skills</p>

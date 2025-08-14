@@ -32,14 +32,14 @@ export default function SeekerLayout({
         <div className="absolute inset-0">
           <Progress value={progressValue}  className="bg-transparent text-[#E63946] h-2" />
         </div>
-        <div className="flex-col absolute inset-0 flex justify-center items-center ml-52 mr-52">
-            <div className="w-full">{children}</div>
-            <div className="w-full relative mt-5" style={{ height: '100px' }}>
-                <div className="absolute -left-64 top-full -translate-y-1/2 ml-24">
-                    <Image src={"/gray-button.svg"} width={50} height={50} alt="left" />
+        <div className="flex-col absolute inset-0 flex justify-center items-center ">
+            <div className="w-full h-full">{children}</div>
+            <div className="z-10 w-full relative mt-5" style={{ height: '100px' }}>
+                <div className="absolute left-6 -translate-y-1/2">
+                    <Image src={"/gray-button.svg"} width={80} height={80} alt="left" />
                 </div>
-                <div className="absolute -right-52 top-full -translate-y-1/2 mr-24">
-                    <Image className="rotate-180" src={"/gray-button.svg"} width={50} height={50} alt="right" />
+                <div className="absolute right-6  -translate-y-1/2">
+                    <Image className="rotate-180" src={"/gray-button.svg"} width={80} height={80} alt="right" />
                 </div>
             </div>
         </div>

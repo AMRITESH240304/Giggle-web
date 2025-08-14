@@ -19,7 +19,7 @@ const UserTypePage = () => {
   };
 
   return (
-    <OnboardingLayout>
+    <OnboardingLayout >
       <UserSelection onGigProvider={handleGigProvider} onGigSeeker={handleGigSeeker} />
     </OnboardingLayout>
   );

@@ -5,7 +5,7 @@ import Image from "next/image";
 
 export default function get_education() {
   return (
-    <div className="flex items-center h-full">
+    <div className="flex items-center h-full ml-52 mr-52" >
       {/* <div className="w-full h-auto bg-black"> */}
       <div className="w-[50%] flex flex-col gap-y-7 text-[#fff] text-6xl font-bold z-2 mr-10 mb-40">
         <p>Your next</p>

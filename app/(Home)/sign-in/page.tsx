@@ -25,7 +25,7 @@ const SignInPage = () => {
 
   useEffect(() => {
     if (!loading && user) {
-      router.push("/dashboard");
+      router.push("/user-type");
     }
   })
 
