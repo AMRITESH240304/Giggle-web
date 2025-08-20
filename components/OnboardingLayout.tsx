@@ -13,7 +13,7 @@ const OnboardingLayout: React.FC<OnboardingLayoutProps> = ({ children }) => {
       {/* Background with geometric patterns */}
       <div className="absolute inset-0 w-full h-full">
         <Image
-          src="/bg1.png"
+          src="/bg-onboard.svg"
           alt="Background"
           fill
           className="object-cover w-full h-full"
@@ -27,7 +27,7 @@ const OnboardingLayout: React.FC<OnboardingLayoutProps> = ({ children }) => {
         <div className="absolute top-2 right-0 z-30">
           <div className="transform rotate-[180deg]">
             <Image
-              src="/img-8-1.png"
+              src="/point-to-right.svg"
               alt="Pointing Hand"
               width={450}
               height={160}
@@ -40,7 +40,7 @@ const OnboardingLayout: React.FC<OnboardingLayoutProps> = ({ children }) => {
         <div className="absolute bottom-2 left-30 z-30">
           <div className="transform rotate-[0deg]">
             <Image
-              src="/img-8-1.png"
+              src="/point-to-right.svg"
               alt="Pointing Hand"
               width={450}
               height={350}
