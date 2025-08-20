@@ -15,7 +15,7 @@ const UserTypePage = () => {
 
   const handleGigSeeker = () => {
     // Navigate to seeker onboarding  
-    router.push("/onboarding?type=seeker");
+    router.push("/upload-resume");
   };
 
   return (

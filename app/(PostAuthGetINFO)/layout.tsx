@@ -4,6 +4,7 @@ import { Progress } from "@/components/ui/progress"
 import { usePathname } from "next/navigation";
 
 const progress_map: {[key:string]:number} = {
+  "/use-type":13,
   "/upload-resume":50,
   "/education-details":75,
   "/your-skills":100
@@ -23,7 +24,7 @@ export default function SeekerLayout({
     <div className="w-full h-full relative overflow-hidden ">
       
         <Image
-          className="w-full h-full"
+          className="w-full h-full "
           src={"/bg-onboard.svg"}
           width={400}
           height={400}

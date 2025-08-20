@@ -36,7 +36,7 @@ export default function YourSkills() {
                 <p className="text-[#fafafa] font-bold text-2xl ">+</p>
             </div>
             <div className="mt-10">
-                <Button className="border-[#E63946] border-2 bg-transparent py-2 px-12  hover:bg-[#E63946]">Finish</Button>
+                <Button className="border-[#E63946] border-2 bg-transparent py-2 px-12  hover:bg-[#E63946] text-[#fff]">Finish</Button>
             </div>
         </div>
     );

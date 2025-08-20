@@ -155,14 +155,20 @@ const VerifyEmailPage = () => {
   const {user} = useAuth()
   const router = useRouter()
   
+  
   useEffect(() => {
-    if (!user){
-      router.push("sign-up")
-    }
-    if (user?.emailVerification){
-      router.push("/dashboard")
-    }
-  })
+    const timer = setTimeout(() => {
+      if (!user) {
+        router.push("/sign-up");
+      }
+      if (user?.emailVerification) {
+        router.push("/user-type");
+      }
+    }, 1000); // wait 0.5s before checking
+  
+    return () => clearTimeout(timer);
+  }, [user, router]);
+  
   
 
   if(user){

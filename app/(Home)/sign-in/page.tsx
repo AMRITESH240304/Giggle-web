@@ -24,7 +24,9 @@ const SignInPage = () => {
   const router = useRouter();
 
   useEffect(() => {
-    if (!loading && user) {
+    if (!loading && !user?.emailVerification) {
+      router.push("/verify-email");
+    }else if (!loading && user?.emailVerification){
       router.push("/user-type");
     }
   })

@@ -4,6 +4,8 @@ import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+
 
 interface FormData {
   name: string;
@@ -19,6 +21,8 @@ const ProfileBuilderPage: React.FC = () => {
     otp: "",
     roleTitle: "",
   });
+
+  const router  = useRouter()
 
   const handleInputChange =
     (field: keyof FormData) => (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -47,7 +51,7 @@ const ProfileBuilderPage: React.FC = () => {
                  {/* Form Section */}
          <div className=" w-full">
                        {/* The form card */}
-            <div className="bg-[#ffffff11] w-[60%] text-[#fff] font-medium text-lg py-10 px-16 rounded-3xl z-10">
+            <div className="bg-[#ffffff11] w-[60%]  font-medium text-lg py-10 px-16 rounded-3xl z-10">
              <form onSubmit={handleSubmit} className="gap-y-2 flex flex-col">
                <p>Name</p>
                <Input
@@ -55,7 +59,7 @@ const ProfileBuilderPage: React.FC = () => {
                  placeholder="Enter Name"
                  value={formData.name}
                  onChange={handleInputChange("name")}
-                 className="bg-[#fff] mb-3"
+                 className="bg-[#fff] mb-3 text-gray-700"
                />
 
                <p>Phone Number</p>
@@ -64,7 +68,7 @@ const ProfileBuilderPage: React.FC = () => {
                  placeholder="Enter Phone Number"
                  value={formData.phoneNumber}
                  onChange={handleInputChange("phoneNumber")}
-                 className="bg-[#fff] mb-3"
+                 className="bg-[#fff] mb-3 text-gray-700"
                />
 
                <p>Enter OTP</p>
@@ -73,7 +77,7 @@ const ProfileBuilderPage: React.FC = () => {
                  placeholder="Enter OTP"
                  value={formData.otp}
                  onChange={handleInputChange("otp")}
-                 className="bg-[#fff] mb-3"
+                 className="bg-[#fff] mb-3 text-gray-700"
                />
 
                <p>
@@ -85,11 +89,11 @@ const ProfileBuilderPage: React.FC = () => {
                  placeholder="Enter Role"
                  value={formData.roleTitle}
                  onChange={handleInputChange("roleTitle")}
-                 className="bg-[#fff] mb-6"
+                 className="bg-[#fff] mb-6 text-gray-700"
                />
 
                <div className="flex w-full justify-end">
-                 <Button type="submit" className="bg-red-500 w-fit">
+                 <Button onClick={()=>{router.push("/Giggle-id-create")}} type="submit" className="bg-red-500 w-fit">
                    Next
                  </Button>
                </div>
@@ -97,7 +101,7 @@ const ProfileBuilderPage: React.FC = () => {
            </div>
 
            {/* The hand image, positioned to match the original design */}
-           <div className="absolute -right-16 top-0 z-0 w-[1000px] h-[1000px]">
+           <div className="absolute -right-16 top-0 z-0 w-[1000px] h-[1000px] pointer-events-none">
              <Image
                src="/curl-hand.svg"
                alt="3D Hand"

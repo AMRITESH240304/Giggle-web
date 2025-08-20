@@ -6,6 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import OnboardingLayout from "@/components/OnboardingLayout";
 import WelcomeContent from "@/components/WelcomeContent";
 
+
 const OnboardingPage = () => {
   const router = useRouter();
   const searchParams = useSearchParams();

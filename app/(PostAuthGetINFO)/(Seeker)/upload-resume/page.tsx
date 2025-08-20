@@ -2,8 +2,12 @@
 
 import { Button } from "@/components/ui/button"
 import Image from "next/image"
+import { useRouter } from "next/navigation"
+
 
 export default function UploadResume(){
+
+    const router = useRouter()
     return(
         <div className="flex gap-x-32 ml-52 mr-52 mt-20">
             <div>
@@ -25,7 +29,7 @@ export default function UploadResume(){
                 </div>
                 <div className="flex flex-col justify-center py-20 items-center w-full h-full border-2 border-dashed border-[#FFB400] rounded-2xl space-y-6">
                     <Image src={"/upload-file-png.png"} height={200} width={200} alt="upload file"/>
-                    <Button className="bg-[#E63946] hover:bg-[#ce3340]  text-[#EAEAEA] py-2 w-2/3">Upload a file</Button>
+                    <Button onClick={()=>{router.push("/education-details")}} className="bg-[#E63946] hover:bg-[#ce3340]  text-[#EAEAEA] py-2 w-2/3">Upload a file</Button>
                     <p className="text-white font-bold">or upload a file</p>
                 </div>
             </div>
