@@ -7,6 +7,7 @@ import {
   logout,
   getCurrentUser,
   getJWT,
+  getJWTWithExpiry,
   storeTokenInCookie,
   getTokenFromCookie,
   removeTokenFromCookie,
@@ -14,8 +15,17 @@ import {
   createEmailVerification,
   loginWithGoogle,
   loginWithApple,
+  refreshAppwriteToken,
 } from "@/lib/appwrite";
+import { isTokenExpired } from "@/lib/tokenUtils";
 import type { Models } from "appwrite";
+
+// Extend window interface to include our timer
+declare global {
+  interface Window {
+    tokenRefreshTimer?: ReturnType<typeof setTimeout>;
+  }
+}
 
 interface AuthContextType {
   user: Models.User<Models.Preferences> | null;
@@ -24,7 +34,7 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
   register: (email: string, password: string, name: string) => Promise<void>;
-  refreshToken: () => Promise<void>;
+  refreshToken: () => Promise<string | null>;
   sendVerificationEmail: (url: string) => Promise<void>;
   verifyEmail: (userId: string, secret: string) => Promise<void>;
   loginWithGoogle: () => Promise<void>;
@@ -44,6 +54,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     setIsMounted(true);
     checkAuth();
+    
+    // Cleanup timer on unmount
+    return () => {
+      if (typeof window !== 'undefined' && window.tokenRefreshTimer) {
+        clearTimeout(window.tokenRefreshTimer);
+      }
+    };
   }, []);
 
   const checkAuth = async () => {
@@ -51,7 +68,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const storedToken = getTokenFromCookie();
 
       if (storedToken) {
-        setToken(storedToken);
+        // Check if token is expired or about to expire
+        if (isTokenExpired(storedToken)) {
+          console.log("Token is expired, refreshing...");
+          await refreshToken();
+        } else {
+          setToken(storedToken);
+          
+          // Calculate and set refresh timer based on existing token
+          const tokenData = await getJWTWithExpiry();
+          if (tokenData?.refreshTime && typeof window !== 'undefined') {
+            scheduleTokenRefresh(tokenData.refreshTime);
+          }
+        }
       }
 
       const currentUser = await getCurrentUser();
@@ -59,6 +88,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (currentUser) {
         setUser(currentUser);
 
+        // If we have a user but no token, refresh the token
         if (!storedToken) {
           await refreshToken();
         }
@@ -68,6 +98,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         removeTokenFromCookie();
       }
     } catch (error) {
+      console.error("Error checking auth:", error);
       setUser(null);
       setToken(null);
       removeTokenFromCookie();
@@ -78,16 +109,52 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const refreshToken = async () => {
     try {
-      const jwt = await getJWT();
-      if (jwt) {
-        setToken(jwt);
-        storeTokenInCookie(jwt);
+      // Use the direct token refresh function that handles storing the token in cookies
+      const newToken = await refreshAppwriteToken();
+      
+      if (newToken) {
+        setToken(newToken);
+        
+        // Calculate refresh time based on the new token
+        const expiryTime = getJWTWithExpiry().then(data => {
+          if (data?.refreshTime) {
+            console.log(`Token will refresh in ${Math.round(data.refreshTime / 1000)} seconds`);
+            scheduleTokenRefresh(data.refreshTime);
+          }
+        });
+        
+        return newToken;
       }
+      return null;
     } catch (error) {
       console.error("Error refreshing token:", error);
       setToken(null);
       removeTokenFromCookie();
+      return null;
     }
+  };
+  
+  // Schedule token refresh before it expires
+  const scheduleTokenRefresh = (refreshTimeMs: number) => {
+    if (typeof window === 'undefined') return;
+    
+    // Clear any existing refresh timers
+    if (window.tokenRefreshTimer) {
+      clearTimeout(window.tokenRefreshTimer);
+    }
+    
+    // Set new refresh timer - ensure minimum of 10 seconds for safety
+    const safeRefreshTime = Math.max(refreshTimeMs, 10000);
+    console.log(`Scheduling token refresh in ${Math.round(safeRefreshTime / 1000)} seconds`);
+    
+    window.tokenRefreshTimer = setTimeout(() => {
+      console.log('Refreshing token automatically');
+      refreshToken().catch(error => {
+        console.error('Failed to refresh token automatically:', error);
+        // If auto-refresh fails, try again after 30 seconds
+        setTimeout(() => refreshToken(), 30000);
+      });
+    }, safeRefreshTime);
   };
 
   const handleLogin = async (email: string, password: string) => {

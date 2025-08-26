@@ -1,11 +1,14 @@
 import { Client, Account, Databases, ID, AppwriteException, OAuthProvider } from "appwrite";
 import Cookies from "js-cookie";
+import { getTokenExpiryTime, isTokenExpired, calculateRefreshTime } from "./tokenUtils";
 
 export const appwriteConfig = {
   endpoint: process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT!,
   projectId: process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID!,
   databaseId: process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID!,
   userCollectionId: process.env.NEXT_PUBLIC_APPWRITE_USER_COLLECTION_ID!,
+  // JWT token expires in 15 minutes (900 seconds) by default in Appwrite
+  tokenExpiryBuffer: 60000, // 1 minute buffer before expiry
 };
 
 const cookieConfig = {
@@ -28,6 +31,42 @@ export const getJWT = async () => {
     return jwt.jwt;
   } catch (error) {
     console.error("Error creating JWT:", error);
+    return null;
+  }
+};
+
+export const getJWTWithExpiry = async () => {
+  try {
+    const jwtToken = await getJWT();
+    if (!jwtToken) return null;
+    
+    const expiryTime = getTokenExpiryTime(jwtToken);
+    const refreshTime = calculateRefreshTime(jwtToken, appwriteConfig.tokenExpiryBuffer);
+    
+    return {
+      token: jwtToken,
+      expiryTime,
+      refreshTime,
+    };
+  } catch (error) {
+    console.error("Error creating JWT with expiry:", error);
+    return null;
+  }
+};
+
+export const refreshAppwriteToken = async (): Promise<string | null> => {
+  try {
+    // Directly call Appwrite API to create a new JWT token
+    const jwt = await account.createJWT();
+    const token = jwt.jwt;
+    
+    // Store the fresh token in cookie
+    storeTokenInCookie(token);
+    
+    console.log("Appwrite token refreshed successfully");
+    return token;
+  } catch (error) {
+    console.error("Failed to refresh Appwrite token:", error);
     return null;
   }
 };
@@ -69,9 +108,9 @@ export const login = async (email: string, password: string) => {
   try {
     const session = await account.createEmailPasswordSession(email, password);
 
-    const jwt = await getJWT();
-    if (jwt) {
-      storeTokenInCookie(jwt);
+    const jwtData = await getJWTWithExpiry();
+    if (jwtData?.token) {
+      storeTokenInCookie(jwtData.token);
     }
 
     return session;

@@ -1,40 +1,44 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React from "react";
 import { useAuth } from "@/hooks/useAuth";
-import { Button } from "@/components/ui/button";
-import { useRouter,usePathname } from "next/navigation";
+import { useRouter } from "next/navigation";
+import GradeCard from "@/components/dashboard/GradeCard";
+import JobListings from "@/components/dashboard/JobListings";
 
 const DashboardPage = () => {
   const router = useRouter();
-  const pathname = usePathname()
-  const { user, logout } = useAuth();
-
-  const handleLogout = async () => {
-    try {
-      await logout();
-      router.push("/");
-    } catch (error) {
-      console.error("Logout failed:", error);
-    }
-  };
-
+  const { user } = useAuth();
+  
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen">
-      <div className="flex flex-col items-center justify-center space-y-6">
-        <h1 className="text-4xl text-white font-bold">Dashboard</h1>
-        {user && (
-          <p className="text-white text-lg">
-            Welcome, {user.name || user.email}!
-          </p>
-        )}
-        <Button
-          onClick={handleLogout}
-          variant="outline"
-          className="bg-white/10 border-white/20 text-white hover:bg-white/20 hover:border-white/30"
-        >
-          Logout
-        </Button>
+    <div className="container mx-auto px-4 py-8">
+      {/* FLN Grade Card */}
+      <div className="mb-8 max-w-4xl mx-auto">
+        <GradeCard 
+          grade="G+" 
+          lastUpdate="Saturday, 26 Oct" 
+        />
+      </div>
+      
+      {/* Main Content Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Job Listings Section - Takes 2/3 of the space on large screens */}
+        <div className="lg:col-span-2">
+          <JobListings />
+        </div>
+        
+        {/* Sidebar content - Takes 1/3 of the space on large screens */}
+        <div className="space-y-6">
+          <div className="bg-black/30 backdrop-blur-sm p-6 rounded-xl border border-gray-800/50">
+            <h2 className="text-xl font-semibold text-white mb-3">Recent Activity</h2>
+            <p className="text-gray-400">No recent activity to show.</p>
+          </div>
+          
+          <div className="bg-black/30 backdrop-blur-sm p-6 rounded-xl border border-gray-800/50">
+            <h2 className="text-xl font-semibold text-white mb-3">Quick Stats</h2>
+            <p className="text-gray-400">Your statistics will appear here.</p>
+          </div>
+        </div>
       </div>
     </div>
   );
