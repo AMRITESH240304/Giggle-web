@@ -24,12 +24,15 @@ const SignInPage = () => {
   const router = useRouter();
 
   useEffect(() => {
-    if (!loading && !user?.emailVerification) {
-      router.push("/verify-email");
-    }else if (!loading && user?.emailVerification){
-      router.push("/user-type");
+    // Only redirect if we have a user (meaning they're logged in)
+    if (!loading && user) {
+      if (!user.emailVerification) {
+        router.push("/verify-email");
+      } else {
+        router.push("/user-type");
+      }
     }
-  })
+  }, [loading, user, router])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
